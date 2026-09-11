@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { addCourseVideo, createCourse, createStudentAccount, deleteCourse, getAdminCourses, getAdminStudents } from '@/app/actions/admin'
+import { addCourseVideo, createCourse, createStudentAccount, deleteCourse, getAdminCourses, getAdminStudents, getLoginAccounts } from '@/app/actions/admin'
 import { Check, RefreshCw, Trash2, UserPlus } from 'lucide-react'
 
 type Student = Awaited<ReturnType<typeof getAdminStudents>>[number]
@@ -9,9 +9,16 @@ type Student = Awaited<ReturnType<typeof getAdminStudents>>[number]
 export function AdminPanel({ email, activeNav }: { email: string; activeNav: string }) {
   const [students, setStudents] = useState<Student[]>([])
   const [courses, setCourses] = useState<Awaited<ReturnType<typeof getAdminCourses>>>([])
+  const [accounts, setAccounts] = useState<Awaited<ReturnType<typeof getLoginAccounts>>>([])
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
+
+  async function loadAccounts() {
+    setLoading(true)
+    setError('')
+    try { setAccounts(await getLoginAccounts()) } catch { setError('Only the administrator can view login accounts.') } finally { setLoading(false) }
+  }
 
   async function loadStudents() {
     setLoading(true)
@@ -86,6 +93,7 @@ export function AdminPanel({ email, activeNav }: { email: string; activeNav: str
     </form>
     {message && <p className="mt-3 flex items-center gap-2 text-xs font-semibold text-[#2e9e85]"><Check className="size-3.5" />{message}</p>}
     {error && <p className="mt-3 text-xs font-semibold text-[#c65d59]">{error}</p>}
+    <div className="mt-5 rounded-xl border border-[#ecebf6] bg-white p-3 sm:p-4"><div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"><div><h3 className="text-sm font-bold">Login accounts</h3><p className="mt-1 text-xs text-[#888998]">Names, emails, roles, and account creation dates. Passwords are never displayed.</p></div><button type="button" onClick={loadAccounts} disabled={loading} className="inline-flex items-center justify-center gap-2 self-start rounded-lg border border-[#dfddfa] px-3 py-2 text-xs font-bold text-[#6657e8] disabled:opacity-50"><RefreshCw className="size-3.5" /> Load accounts</button></div>{accounts.length > 0 ? <div className="mt-3 grid gap-2">{accounts.map((account) => <div key={account.id} className="flex min-w-0 flex-col gap-2 rounded-lg border border-[#efeff5] p-3 sm:flex-row sm:items-center sm:justify-between"><div className="min-w-0"><p className="truncate text-xs font-bold">{account.name}</p><p className="truncate text-[11px] text-[#888998]">{account.email}</p></div><div className="flex items-center justify-between gap-3 sm:justify-end"><span className={`rounded-full px-2 py-1 text-[10px] font-bold ${account.role === 'Admin' ? 'bg-[#f0efff] text-[#6657e8]' : 'bg-[#eaf8f4] text-[#2e9e85]'}`}>{account.role}</span><span className="text-[10px] text-[#999aa8]">{new Date(account.createdAt).toLocaleDateString()}</span></div></div>)}</div> : <p className="mt-3 rounded-lg border border-dashed border-[#deddec] px-3 py-4 text-center text-xs text-[#999aa8]">Load the account list to view login identities.</p>}</div>
     <div className="mt-5 grid gap-3">
       {students.length === 0 ? <p className="rounded-xl border border-dashed border-[#deddec] px-4 py-6 text-center text-xs text-[#999aa8]">Refresh the roster to load student login and performance data.</p> : students.map((student) => <div key={student.id} className="rounded-xl border border-[#ecebf6] bg-white p-4"><div className="flex items-start justify-between gap-3"><div><p className="text-sm font-bold">{student.name}</p><p className="mt-1 text-xs text-[#888998]">{student.email}</p></div><span className="rounded-full bg-[#f0efff] px-2 py-1 text-[10px] font-bold text-[#6657e8]">{student.courseProgress}% progress</span></div><div className="mt-3 grid grid-cols-3 gap-2 text-center"><div className="rounded-lg bg-[#fff8e7] p-2"><p className="text-sm font-bold">{student.streakDays}</p><p className="text-[10px] text-[#999aa8]">streak</p></div><div className="rounded-lg bg-[#f1f0ff] p-2"><p className="text-sm font-bold">{student.studyMinutes}m</p><p className="text-[10px] text-[#999aa8]">study time</p></div><div className="rounded-lg bg-[#eaf8f4] p-2"><p className="text-sm font-bold">{student.xp}</p><p className="text-[10px] text-[#999aa8]">XP</p></div></div></div>)}
     </div>

@@ -116,3 +116,15 @@ export async function getAdminStudents() {
   return result.rows as Array<{ id: string; name: string; email: string; createdAt: string; streakDays: number; studyMinutes: number; xp: number; courseProgress: number }>
 }
 
+export async function getLoginAccounts() {
+  await requireAdmin()
+  const result = await db.execute(sql`
+    SELECT u."id", u."name", u."email", u."createdAt",
+      CASE WHEN sp."userId" IS NULL THEN 'Admin' ELSE 'Student' END AS "role"
+    FROM "user" u
+    LEFT JOIN "student_profile" sp ON sp."userId" = u."id"
+    ORDER BY u."createdAt" DESC
+  `)
+  return result.rows as Array<{ id: string; name: string; email: string; createdAt: string; role: 'Admin' | 'Student' }>
+}
+
