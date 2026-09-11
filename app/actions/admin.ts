@@ -76,8 +76,8 @@ export async function getAdminCourses() {
 }
 
 export async function getPublicCourses() {
-  const result = await db.execute(sql`SELECT "id", "title", "subtitle", "color", "icon" FROM "course" ORDER BY "createdAt" DESC`)
-  return result.rows as Array<{ id: string; title: string; subtitle: string; color: string; icon: string }>
+  const result = await db.execute(sql`SELECT "id", "title", "subtitle", "color", "icon", "notesPathname" FROM "course" ORDER BY "createdAt" DESC`)
+  return result.rows as Array<{ id: string; title: string; subtitle: string; color: string; icon: string; notesPathname: string | null }>
 }
 
 export async function addCourseVideo(formData: FormData) {
