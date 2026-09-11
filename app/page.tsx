@@ -17,7 +17,6 @@ import {
   Flame,
   Home,
   Library,
-  Menu,
   MessageCircle,
   MoreHorizontal,
   Play,
@@ -116,11 +115,11 @@ export default function Page() {
 
       {sidebarOpen && <button aria-label="Close navigation" className="fixed inset-0 z-20 bg-[#202238]/20 lg:hidden" onClick={() => setSidebarOpen(false)} />}
       <main className="min-w-0 flex-1">
-        <header className="flex h-[76px] items-center justify-between border-b border-[#e9eaf1] bg-white/70 px-5 sm:px-8 lg:px-10"><button type="button" className="rounded-lg p-2 text-[#77798b] transition hover:bg-[#f4f4f8] lg:hidden" onClick={() => setSidebarOpen(true)} aria-label="Open menu"><Menu className="size-5" /></button>
+        <header className="flex h-[76px] items-center justify-end border-b border-[#e9eaf1] bg-white/70 px-5 sm:px-8 lg:px-10">
           <div className="hidden lg:block"><p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#a2a3af]">Learning since {learningStartDate}</p><p className="mt-1 text-[13px] text-[#77798b]">Your performance starts from your first account activity.</p></div>
           <div className="ml-auto flex items-center gap-3"><button className="relative rounded-full p-2 text-[#898b9a] hover:bg-[#f4f4f8]" aria-label="Notifications"><CircleHelp className="size-[19px]" /><span className="absolute right-1.5 top-1.5 size-1.5 rounded-full bg-[#ef7767]" /></button><div className="flex size-9 items-center justify-center rounded-full bg-[#f7d7ca] text-xs font-bold text-[#9d654d]">{profileInitials}</div></div>
         </header>
-        <div className="mx-auto max-w-[1450px] p-5 pb-5 sm:p-8 sm:pb-8 lg:p-10 lg:pb-10">
+        <div className="mx-auto max-w-[1450px] p-5 pb-24 sm:p-8 sm:pb-24 lg:p-10 lg:pb-10">
           {activeNav === 'Home' && <section className="mb-8"><p className="text-sm font-medium text-[#73758a]">{timeGreeting}, {profileName}</p></section>}
           {activeNav === 'Home' ? <div className="max-w-4xl">
             <section className="mb-6 grid gap-4 sm:grid-cols-3">
@@ -140,6 +139,13 @@ export default function Page() {
           </div>
         </footer>
       </main>
+      <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-[#e8e9f1] bg-white/95 px-1 pb-[env(safe-area-inset-bottom)] pt-2 shadow-[0_-8px_24px_rgba(34,35,65,0.08)] backdrop-blur lg:hidden" aria-label="Mobile navigation">
+        {[{ label: 'Home', icon: Home }, { label: 'Courses', icon: Library }, { label: 'AI tutor', icon: MessageCircle }, { label: 'Planner', icon: Target }, { label: 'Profile', icon: CircleUserRound }].map(({ label, icon: Icon }) => {
+          const navValue = label === 'Courses' ? 'My courses' : label === 'Planner' ? 'Study planner' : label
+          const isActive = activeNav === navValue
+          return <button key={label} type="button" onClick={() => setActiveNav(navValue)} className={`flex min-h-12 min-w-0 flex-col items-center justify-center gap-1 rounded-xl text-[9px] font-semibold transition-colors sm:text-[10px] ${isActive ? 'text-[#6657e8]' : 'text-[#999aa8]'}`} aria-current={isActive ? 'page' : undefined}><Icon className={`size-[17px] ${isActive ? 'stroke-[2.5]' : ''}`} />{label}</button>
+        })}
+      </nav>
     </div>
   )
 }
