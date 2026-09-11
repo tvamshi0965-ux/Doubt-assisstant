@@ -110,7 +110,7 @@ export default function Page() {
           <div className="hidden lg:block"><p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#a2a3af]">Monday, October 14, 2024</p><p className="mt-1 text-[13px] text-[#77798b]">A little progress every day.</p></div>
           <div className="ml-auto flex items-center gap-3"><button className="relative rounded-full p-2 text-[#898b9a] hover:bg-[#f4f4f8]" aria-label="Notifications"><CircleHelp className="size-[19px]" /><span className="absolute right-1.5 top-1.5 size-1.5 rounded-full bg-[#ef7767]" /></button><div className="flex size-9 items-center justify-center rounded-full bg-[#f7d7ca] text-xs font-bold text-[#9d654d]">{profileInitials}</div></div>
         </header>
-        <div className="mx-auto max-w-[1450px] p-5 sm:p-8 lg:p-10">
+        <div className="mx-auto max-w-[1450px] p-5 pb-24 sm:p-8 sm:pb-24 lg:p-10 lg:pb-10">
           <section className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end"><div><p className="mb-2 text-sm font-medium text-[#73758a]">{timeGreeting}, {profileName}</p><h1 className="text-[30px] font-bold tracking-[-0.045em] text-[#23243a] sm:text-[35px]">Ready to make progress?</h1></div><button className="flex w-fit items-center gap-2 rounded-xl bg-[#6657e8] px-4 py-2.5 text-[12px] font-bold text-white shadow-[0_5px_12px_rgba(102,87,232,0.2)] hover:bg-[#5748d6]"><Plus className="size-4" /> Add a goal</button></section>
           <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_390px]">
             <div className="min-w-0">
@@ -126,6 +126,13 @@ export default function Page() {
           </div>
         </div>
       </main>
+      <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-[#e8e9f1] bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] pt-2 shadow-[0_-8px_24px_rgba(34,35,65,0.08)] backdrop-blur lg:hidden" aria-label="Mobile navigation">
+        {[{ label: 'Overview', icon: Home }, { label: 'Courses', icon: Library }, { label: 'AI tutor', icon: MessageCircle }, { label: 'Planner', icon: Target }].map(({ label, icon: Icon }) => {
+          const navValue = label === 'Courses' ? 'My courses' : label === 'Planner' ? 'Study planner' : label
+          const isActive = activeNav === navValue
+          return <button key={label} type="button" onClick={() => setActiveNav(navValue)} className={`flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl text-[10px] font-semibold transition-colors ${isActive ? 'text-[#6657e8]' : 'text-[#999aa8]'}`} aria-current={isActive ? 'page' : undefined}><Icon className={`size-[18px] ${isActive ? 'stroke-[2.5]' : ''}`} />{label}</button>
+        })}
+      </nav>
     </div>
   )
 }
