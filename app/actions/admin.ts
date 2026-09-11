@@ -72,6 +72,10 @@ export async function deleteCourse(courseTitle: string) {
 
 export async function getAdminCourses() {
   await requireAdmin()
+  return getPublicCourses()
+}
+
+export async function getPublicCourses() {
   const result = await db.execute(sql`SELECT "id", "title", "subtitle", "color", "icon" FROM "course" ORDER BY "createdAt" DESC`)
   return result.rows as Array<{ id: string; title: string; subtitle: string; color: string; icon: string }>
 }

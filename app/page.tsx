@@ -5,6 +5,8 @@ import { useRouter } from 'next/navigation'
 import { authClient } from '@/lib/auth-client'
 import { AdminPanel } from '@/components/admin-panel'
 import { CourseVideoPlayer } from '@/components/course-video-player'
+import { getPublicCourses } from '@/app/actions/admin'
+import useSWR from 'swr'
 import {
   ArrowRight,
   BookOpen,
@@ -29,7 +31,7 @@ import {
   Zap,
 } from 'lucide-react'
 
-const courses = [
+const defaultCourses = [
   { title: 'Artificial Intelligence', subtitle: 'Foundations of intelligent systems', progress: 72, color: 'violet', icon: 'AI', lessons: '18 of 25 lessons' },
   { title: 'Deep Learning', subtitle: 'Neural networks and model training', progress: 46, color: 'teal', icon: 'DL', lessons: '11 of 24 lessons' },
   { title: 'Machine Learning', subtitle: 'Models, data, and predictions', progress: 28, color: 'amber', icon: 'ML', lessons: '7 of 26 lessons' },
@@ -56,6 +58,8 @@ export default function Page() {
   const [plannerOpen, setPlannerOpen] = useState(false)
   const [studyPlan, setStudyPlan] = useState<string | null>(null)
   const { data: session } = authClient.useSession()
+  const { data: managedCourses = [] } = useSWR('public-courses', getPublicCourses, { revalidateOnFocus: true })
+  const courses = [...defaultCourses, ...managedCourses.filter((course) => !defaultCourses.some((defaultCourse) => defaultCourse.title === course.title)).map((course) => ({ ...course, progress: 0, lessons: 'Not started' }))]
   const profileName = session?.user?.name?.trim() || session?.user?.email?.split('@')[0] || 'Student'
   const profileEmail = session?.user?.email || 'student@lumalearn.com'
   const profileInitials = profileName.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase()
