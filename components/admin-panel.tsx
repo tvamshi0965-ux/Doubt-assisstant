@@ -18,7 +18,7 @@ export function AdminPanel({ email, activeNav }: { email: string; activeNav: str
   const [error, setError] = useState('')
 
   useEffect(() => {
-    if (['Home', 'My courses'].includes(activeNav) && ['tvamshi@gmail.com', 'tvamshi2007@gmail.com'].includes(email.toLowerCase())) {
+    if (activeNav === 'Administrator' && ['tvamshi@gmail.com', 'tvamshi2007@gmail.com'].includes(email.toLowerCase())) {
       void loadCourses()
     }
   }, [activeNav, email])
@@ -114,7 +114,7 @@ export function AdminPanel({ email, activeNav }: { email: string; activeNav: str
     try { await deleteCourseVideo(id); setVideos((current) => current.filter((video) => video.id !== id)); setMessage('Lesson deleted.') } catch (cause) { setError(cause instanceof Error ? cause.message : 'Unable to delete lesson.') } finally { setLoading(false) }
   }
 
-  if (!['tvamshi@gmail.com', 'tvamshi2007@gmail.com'].includes(email.toLowerCase()) || !['Home', 'My courses'].includes(activeNav)) return null
+  if (!['tvamshi@gmail.com', 'tvamshi2007@gmail.com'].includes(email.toLowerCase()) || activeNav !== 'Administrator') return null
 
   return <section className="mt-6 w-full min-w-0 overflow-hidden rounded-2xl border border-[#e5e2ff] bg-[#fbfaff] p-3 shadow-[0_3px_10px_rgba(34,35,65,0.03)] sm:mt-8 sm:p-6">
     <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">

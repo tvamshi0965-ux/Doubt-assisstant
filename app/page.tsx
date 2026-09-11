@@ -16,6 +16,7 @@ import {
   CircleHelp,
   CircleUserRound,
   Clock3,
+  ShieldCheck,
   Flame,
   Home,
   Library,
@@ -95,6 +96,7 @@ export default function Page() {
               {label === 'AI tutor' && <span className="ml-auto rounded-full bg-[#e8e5ff] px-1.5 py-0.5 text-[10px] font-bold text-[#6554df]">NEW</span>}
             </button>
           ))}
+          {['tvamshi@gmail.com', 'tvamshi2007@gmail.com'].includes(profileEmail.toLowerCase()) && <button type="button" onClick={() => { setActiveNav('Administrator'); setSidebarOpen(false) }} className={`mt-3 flex items-center gap-3 rounded-xl border px-3.5 py-3 text-left text-[13px] font-semibold transition-colors ${activeNav === 'Administrator' ? 'border-[#ded9ff] bg-[#f0efff] text-[#5b4cdb]' : 'border-[#ecebf5] text-[#77798b] hover:bg-[#f7f7fb] hover:text-[#36374c]'}`}><ShieldCheck className="size-[18px]" />Administrator</button>}
         </nav>
         <div className="mt-auto rounded-2xl bg-[#faf8f1] p-4">
           <div className="mb-3 flex size-9 items-center justify-center rounded-xl bg-[#fff0c9] text-[#d89712]"><Trophy className="size-[18px]" /></div>
