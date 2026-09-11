@@ -86,14 +86,15 @@ export async function addCourseVideo(formData: FormData) {
   const title = String(formData.get('title') ?? '').trim()
   const youtubeUrl = String(formData.get('youtubeUrl') ?? '').trim()
   const position = Number(formData.get('position') ?? 0)
+  const part = Number(formData.get('part') ?? 1)
 
   if (!courseTitle || !title || !youtubeUrl || !/^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\//i.test(youtubeUrl)) {
     throw new Error('Enter a course, lesson title, and valid YouTube URL.')
   }
 
   await db.execute(sql`
-    INSERT INTO "course_video" ("id", "courseTitle", "title", "youtubeUrl", "position", "createdBy")
-    VALUES (${crypto.randomUUID()}, ${courseTitle}, ${title}, ${youtubeUrl}, ${Number.isFinite(position) ? position : 0}, ${admin.id})
+    INSERT INTO "course_video" ("id", "courseTitle", "title", "youtubeUrl", "position", "part", "createdBy")
+    VALUES (${crypto.randomUUID()}, ${courseTitle}, ${title}, ${youtubeUrl}, ${Number.isFinite(position) ? position : 0}, ${Number.isFinite(part) && part > 0 ? part : 1}, ${admin.id})
   `)
   revalidatePath('/')
 }
@@ -104,8 +105,9 @@ export async function updateCourseVideo(formData: FormData) {
   const title = String(formData.get('title') ?? '').trim()
   const youtubeUrl = String(formData.get('youtubeUrl') ?? '').trim()
   const position = Number(formData.get('position') ?? 0)
+  const part = Number(formData.get('part') ?? 1)
   if (!id || !title || !/^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\//i.test(youtubeUrl)) throw new Error('Enter a lesson title and valid YouTube URL.')
-  await db.execute(sql`UPDATE "course_video" SET "title" = ${title}, "youtubeUrl" = ${youtubeUrl}, "position" = ${Number.isFinite(position) ? position : 0}, "updatedAt" = now(), "createdBy" = ${admin.id} WHERE "id" = ${id}`)
+  await db.execute(sql`UPDATE "course_video" SET "title" = ${title}, "youtubeUrl" = ${youtubeUrl}, "position" = ${Number.isFinite(position) ? position : 0}, "part" = ${Number.isFinite(part) && part > 0 ? part : 1}, "updatedAt" = now(), "createdBy" = ${admin.id} WHERE "id" = ${id}`)
   revalidatePath('/')
 }
 
@@ -118,12 +120,12 @@ export async function deleteCourseVideo(id: string) {
 
 export async function getCourseVideos(courseTitle: string) {
   const result = await db.execute(sql`
-    SELECT "id", "courseTitle", "title", "youtubeUrl", "position"
+    SELECT "id", "courseTitle", "title", "youtubeUrl", "position", "part"
     FROM "course_video"
     WHERE "courseTitle" = ${courseTitle}
     ORDER BY "position" ASC, "createdAt" ASC
   `)
-  return result.rows as Array<{ id: string; courseTitle: string; title: string; youtubeUrl: string; position: number }>
+  return result.rows as Array<{ id: string; courseTitle: string; title: string; youtubeUrl: string; position: number; part: number }>
 }
 
 export async function getAdminStudents() {
