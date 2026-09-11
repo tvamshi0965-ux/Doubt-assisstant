@@ -12,6 +12,7 @@ import {
   Check,
   ChevronRight,
   CircleHelp,
+  CircleUserRound,
   Clock3,
   Flame,
   Home,
@@ -133,11 +134,11 @@ export default function Page() {
           <AdminPanel email={profileEmail} />
         </div>
       </main>
-      <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-[#e8e9f1] bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] pt-2 shadow-[0_-8px_24px_rgba(34,35,65,0.08)] backdrop-blur lg:hidden" aria-label="Mobile navigation">
-        {[{ label: 'Home', icon: Home }, { label: 'Courses', icon: Library }, { label: 'AI tutor', icon: MessageCircle }, { label: 'Planner', icon: Target }].map(({ label, icon: Icon }) => {
+      <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-[#e8e9f1] bg-white/95 px-1 pb-[env(safe-area-inset-bottom)] pt-2 shadow-[0_-8px_24px_rgba(34,35,65,0.08)] backdrop-blur lg:hidden" aria-label="Mobile navigation">
+        {[{ label: 'Home', icon: Home }, { label: 'Courses', icon: Library }, { label: 'AI tutor', icon: MessageCircle }, { label: 'Planner', icon: Target }, { label: 'Profile', icon: CircleUserRound }].map(({ label, icon: Icon }) => {
           const navValue = label === 'Courses' ? 'My courses' : label === 'Planner' ? 'Study planner' : label
-          const isActive = activeNav === navValue
-          return <button key={label} type="button" onClick={() => setActiveNav(navValue)} className={`flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl text-[10px] font-semibold transition-colors ${isActive ? 'text-[#6657e8]' : 'text-[#999aa8]'}`} aria-current={isActive ? 'page' : undefined}><Icon className={`size-[18px] ${isActive ? 'stroke-[2.5]' : ''}`} />{label}</button>
+          const isActive = activeNav === navValue || (label === 'Profile' && sidebarOpen)
+          return <button key={label} type="button" onClick={() => label === 'Profile' ? setSidebarOpen(true) : setActiveNav(navValue)} className={`flex min-h-12 min-w-0 flex-col items-center justify-center gap-1 rounded-xl text-[9px] font-semibold transition-colors sm:text-[10px] ${isActive ? 'text-[#6657e8]' : 'text-[#999aa8]'}`} aria-current={isActive && label !== 'Profile' ? 'page' : undefined}><Icon className={`size-[17px] ${isActive ? 'stroke-[2.5]' : ''}`} />{label}</button>
         })}
       </nav>
     </div>
