@@ -45,7 +45,7 @@ export default function Page() {
   const [messages, setMessages] = useState(initialMessages)
   const [signingOut, setSigningOut] = useState(false)
   const [input, setInput] = useState('')
-  const [activeNav, setActiveNav] = useState('Overview')
+  const [activeNav, setActiveNav] = useState('Home')
   const { data: session } = authClient.useSession()
   const profileName = session?.user?.name?.trim() || session?.user?.email?.split('@')[0] || 'Student'
   const profileEmail = session?.user?.email || 'student@lumalearn.com'
@@ -71,7 +71,7 @@ export default function Page() {
           <button className="lg:hidden" onClick={() => setSidebarOpen(false)} aria-label="Close menu"><X className="size-5" /></button>
         </div>
         <nav className="flex flex-col gap-1.5" aria-label="Main navigation">
-          {[{ label: 'Overview', icon: Home }, { label: 'My courses', icon: Library }, { label: 'AI tutor', icon: MessageCircle }, { label: 'Study planner', icon: Target }].map(({ label, icon: Icon }) => (
+          {[{ label: 'Home', icon: Home }, { label: 'My courses', icon: Library }, { label: 'AI tutor', icon: MessageCircle }, { label: 'Study planner', icon: Target }].map(({ label, icon: Icon }) => (
             <button key={label} onClick={() => { setActiveNav(label); setSidebarOpen(false) }} className={`flex items-center gap-3 rounded-xl px-3.5 py-3 text-left text-[13px] font-semibold transition-colors ${activeNav === label ? 'bg-[#f0efff] text-[#5b4cdb]' : 'text-[#77798b] hover:bg-[#f7f7fb] hover:text-[#36374c]'}`}>
               <Icon className="size-[18px]" />{label}
               {label === 'AI tutor' && <span className="ml-auto rounded-full bg-[#e8e5ff] px-1.5 py-0.5 text-[10px] font-bold text-[#6554df]">NEW</span>}
@@ -112,7 +112,7 @@ export default function Page() {
         </header>
         <div className="mx-auto max-w-[1450px] p-5 pb-24 sm:p-8 sm:pb-24 lg:p-10 lg:pb-10">
           <section className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end"><div><p className="mb-2 text-sm font-medium text-[#73758a]">{timeGreeting}, {profileName}</p><h1 className="text-[30px] font-bold tracking-[-0.045em] text-[#23243a] sm:text-[35px]">Ready to make progress?</h1></div><button className="flex w-fit items-center gap-2 rounded-xl bg-[#6657e8] px-4 py-2.5 text-[12px] font-bold text-white shadow-[0_5px_12px_rgba(102,87,232,0.2)] hover:bg-[#5748d6]"><Plus className="size-4" /> Add a goal</button></section>
-          {activeNav === 'Overview' ? <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_390px]">
+          {activeNav === 'Home' ? <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_390px]">
             <div className="min-w-0">
               <section className="mb-6 grid gap-4 sm:grid-cols-3">
                 <StatCard icon={<Flame className="size-[19px]" />} iconBg="bg-[#fff1d0]" iconColor="text-[#e4a82e]" label="Current streak" value="12 days" note="Personal best: 18 days" />
@@ -127,7 +127,7 @@ export default function Page() {
         </div>
       </main>
       <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-[#e8e9f1] bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] pt-2 shadow-[0_-8px_24px_rgba(34,35,65,0.08)] backdrop-blur lg:hidden" aria-label="Mobile navigation">
-        {[{ label: 'Overview', icon: Home }, { label: 'Courses', icon: Library }, { label: 'AI tutor', icon: MessageCircle }, { label: 'Planner', icon: Target }].map(({ label, icon: Icon }) => {
+        {[{ label: 'Home', icon: Home }, { label: 'Courses', icon: Library }, { label: 'AI tutor', icon: MessageCircle }, { label: 'Planner', icon: Target }].map(({ label, icon: Icon }) => {
           const navValue = label === 'Courses' ? 'My courses' : label === 'Planner' ? 'Study planner' : label
           const isActive = activeNav === navValue
           return <button key={label} type="button" onClick={() => setActiveNav(navValue)} className={`flex min-h-12 flex-col items-center justify-center gap-1 rounded-xl text-[10px] font-semibold transition-colors ${isActive ? 'text-[#6657e8]' : 'text-[#999aa8]'}`} aria-current={isActive ? 'page' : undefined}><Icon className={`size-[18px] ${isActive ? 'stroke-[2.5]' : ''}`} />{label}</button>
