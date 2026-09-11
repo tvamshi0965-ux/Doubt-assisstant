@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { authClient } from '@/lib/auth-client'
 import { AdminPanel } from '@/components/admin-panel'
@@ -59,9 +59,13 @@ export default function Page() {
   const profileName = session?.user?.name?.trim() || session?.user?.email?.split('@')[0] || 'Student'
   const profileEmail = session?.user?.email || 'student@lumalearn.com'
   const profileInitials = profileName.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase()
-  const currentHour = new Date().getHours()
-  const timeGreeting = currentHour < 12 ? 'Good morning' : currentHour < 18 ? 'Good afternoon' : 'Good evening'
+  const [timeGreeting, setTimeGreeting] = useState('')
   const learningStartDate = session?.user?.createdAt ? new Date(session.user.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'today'
+
+  useEffect(() => {
+    const currentHour = new Date().getHours()
+    setTimeGreeting(currentHour < 12 ? 'Good morning' : currentHour < 18 ? 'Good afternoon' : 'Good evening')
+  }, [])
 
   function sendMessage(text = input) {
     const clean = text.trim()
@@ -121,7 +125,7 @@ export default function Page() {
           <div className="ml-auto flex items-center gap-3"><button className="relative rounded-full p-2 text-[#898b9a] hover:bg-[#f4f4f8]" aria-label="Notifications"><CircleHelp className="size-[19px]" /><span className="absolute right-1.5 top-1.5 size-1.5 rounded-full bg-[#ef7767]" /></button><div className="flex size-9 items-center justify-center rounded-full bg-[#f7d7ca] text-xs font-bold text-[#9d654d]">{profileInitials}</div></div>
         </header>
         <div className="mx-auto max-w-[1450px] p-5 pb-24 sm:p-8 sm:pb-24 lg:p-10 lg:pb-10">
-          {activeNav === 'Home' && <section className="mb-8" suppressHydrationWarning><p className="text-sm font-medium text-[#73758a]">{timeGreeting}, {profileName}</p></section>}
+          {activeNav === 'Home' && timeGreeting && <section className="mb-8"><p className="text-sm font-medium text-[#73758a]">{timeGreeting}, {profileName}</p></section>}
           {activeNav === 'Home' ? <div className="max-w-4xl">
             <section className="mb-6 grid gap-4 sm:grid-cols-3">
               <StatCard icon={<Flame className="size-[19px]" />} iconBg="bg-[#fff1d0]" iconColor="text-[#e4a82e]" label="Current streak" value={learningStarted ? '0 days' : 'Not started'} note={learningStarted ? 'Complete a lesson today' : 'Starts after your first lesson'} />
