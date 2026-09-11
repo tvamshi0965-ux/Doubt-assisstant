@@ -48,6 +48,34 @@ export async function createStudentAccount(formData: FormData) {
   return { email }
 }
 
+export async function addCourseVideo(formData: FormData) {
+  const admin = await requireAdmin()
+  const courseTitle = String(formData.get('courseTitle') ?? '').trim()
+  const title = String(formData.get('title') ?? '').trim()
+  const youtubeUrl = String(formData.get('youtubeUrl') ?? '').trim()
+  const position = Number(formData.get('position') ?? 0)
+
+  if (!courseTitle || !title || !youtubeUrl || !/^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\//i.test(youtubeUrl)) {
+    throw new Error('Enter a course, lesson title, and valid YouTube URL.')
+  }
+
+  await db.execute(sql`
+    INSERT INTO "course_video" ("id", "courseTitle", "title", "youtubeUrl", "position", "createdBy")
+    VALUES (${crypto.randomUUID()}, ${courseTitle}, ${title}, ${youtubeUrl}, ${Number.isFinite(position) ? position : 0}, ${admin.id})
+  `)
+  revalidatePath('/')
+}
+
+export async function getCourseVideos(courseTitle: string) {
+  const result = await db.execute(sql`
+    SELECT "id", "courseTitle", "title", "youtubeUrl", "position"
+    FROM "course_video"
+    WHERE "courseTitle" = ${courseTitle}
+    ORDER BY "position" ASC, "createdAt" ASC
+  `)
+  return result.rows as Array<{ id: string; courseTitle: string; title: string; youtubeUrl: string; position: number }>
+}
+
 export async function getAdminStudents() {
   await requireAdmin()
   const result = await db.execute(sql`
