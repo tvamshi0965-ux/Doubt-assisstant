@@ -116,7 +116,7 @@ export default function Page() {
 
       {sidebarOpen && <button aria-label="Close navigation" className="fixed inset-0 z-20 bg-[#202238]/20 lg:hidden" onClick={() => setSidebarOpen(false)} />}
       <main className="min-w-0 flex-1">
-        <header className="flex h-[76px] items-center justify-end border-b border-[#e9eaf1] bg-white/70 px-5 sm:px-8 lg:px-10">
+        <header className="flex h-[76px] items-center justify-between border-b border-[#e9eaf1] bg-white/70 px-5 sm:px-8 lg:px-10"><button type="button" className="rounded-lg p-2 text-[#77798b] transition hover:bg-[#f4f4f8] lg:hidden" onClick={() => setSidebarOpen(true)} aria-label="Open menu"><Menu className="size-5" /></button>
           <div className="hidden lg:block"><p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#a2a3af]">Learning since {learningStartDate}</p><p className="mt-1 text-[13px] text-[#77798b]">Your performance starts from your first account activity.</p></div>
           <div className="ml-auto flex items-center gap-3"><button className="relative rounded-full p-2 text-[#898b9a] hover:bg-[#f4f4f8]" aria-label="Notifications"><CircleHelp className="size-[19px]" /><span className="absolute right-1.5 top-1.5 size-1.5 rounded-full bg-[#ef7767]" /></button><div className="flex size-9 items-center justify-center rounded-full bg-[#f7d7ca] text-xs font-bold text-[#9d654d]">{profileInitials}</div></div>
         </header>
