@@ -1,6 +1,8 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
+import { authClient } from '@/lib/auth-client'
 import {
   ArrowRight,
   BookOpen,
@@ -38,8 +40,10 @@ const initialMessages = [
 ]
 
 export default function Page() {
+  const router = useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [messages, setMessages] = useState(initialMessages)
+  const [signingOut, setSigningOut] = useState(false)
   const [input, setInput] = useState('')
   const [activeNav, setActiveNav] = useState('Overview')
 
@@ -77,7 +81,19 @@ export default function Page() {
         <div className="mt-5 flex items-center gap-3 border-t border-[#eff0f4] pt-5">
           <div className="flex size-9 items-center justify-center rounded-full bg-[#f7d7ca] text-xs font-bold text-[#9d654d]">MC</div>
           <div className="min-w-0"><p className="truncate text-[12px] font-bold">Maya Chen</p><p className="text-[11px] text-[#999aa8]">Student</p></div>
-          <MoreHorizontal className="ml-auto size-4 text-[#a4a5b0]" />
+          <button
+            type="button"
+            onClick={async () => {
+              setSigningOut(true)
+              await authClient.signOut()
+              router.push('/sign-in')
+              router.refresh()
+            }}
+            disabled={signingOut}
+            className="ml-auto rounded-lg px-2 py-1.5 text-[11px] font-semibold text-[#8b8c9a] transition hover:bg-[#f4f3ff] hover:text-[#6657e8] disabled:opacity-50"
+          >
+            {signingOut ? 'Signing out…' : 'Log out'}
+          </button>
         </div>
       </aside>
 
