@@ -29,9 +29,11 @@ import {
 } from 'lucide-react'
 
 const courses = [
-  { title: 'Calculus II', subtitle: 'Integration techniques', progress: 72, color: 'violet', icon: '∫', lessons: '18 of 25 lessons' },
-  { title: 'Organic Chemistry', subtitle: 'Reaction mechanisms', progress: 46, color: 'teal', icon: '⌬', lessons: '11 of 24 lessons' },
-  { title: 'Physics: Mechanics', subtitle: 'Newtonian motion', progress: 28, color: 'amber', icon: '↗', lessons: '7 of 26 lessons' },
+  { title: 'Artificial Intelligence', subtitle: 'Foundations of intelligent systems', progress: 72, color: 'violet', icon: 'AI', lessons: '18 of 25 lessons' },
+  { title: 'Deep Learning', subtitle: 'Neural networks and model training', progress: 46, color: 'teal', icon: 'DL', lessons: '11 of 24 lessons' },
+  { title: 'Machine Learning', subtitle: 'Models, data, and predictions', progress: 28, color: 'amber', icon: 'ML', lessons: '7 of 26 lessons' },
+  { title: 'Full Stack Development', subtitle: 'Build modern web applications', progress: 18, color: 'violet', icon: 'FS', lessons: '5 of 28 lessons' },
+  { title: 'SQL', subtitle: 'Query and manage relational data', progress: 12, color: 'teal', icon: 'DB', lessons: '3 of 20 lessons' },
 ]
 
 const initialMessages = [
