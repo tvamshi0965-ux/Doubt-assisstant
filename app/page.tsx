@@ -132,13 +132,6 @@ export default function Page() {
           </div> : <SectionView activeNav={activeNav} courses={courses} profileName={profileName} profileEmail={profileEmail} profileInitials={profileInitials} learningStarted={learningStarted} onLogout={async () => { await authClient.signOut(); router.push('/sign-in'); router.refresh() }} selectedCourse={selectedCourse} onSelectCourse={(course) => { setSelectedCourse(course); setLearningStarted(true) }} onCloseCourse={() => setSelectedCourse(null)} plannerCourse={plannerCourse} setPlannerCourse={setPlannerCourse} plannerOpen={plannerOpen} setPlannerOpen={setPlannerOpen} studyPlan={studyPlan} setStudyPlan={setStudyPlan} />}
           <AdminPanel email={profileEmail} />
         </div>
-        <footer className="border-t border-[#e9eaf1] bg-white px-5 py-6 sm:px-8 lg:px-10" aria-label="Site footer">
-          <div className="mx-auto flex max-w-[1450px] flex-col gap-3 text-center text-[11px] text-[#999aa8] sm:flex-row sm:items-center sm:justify-between sm:text-left">
-            <p className="font-semibold text-[#66677a]">EDU TECH</p>
-            <p>Learn with clarity. Build your future.</p>
-            <p>© {new Date().getFullYear()} EDU TECH</p>
-          </div>
-        </footer>
       </main>
       <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-5 border-t border-[#e8e9f1] bg-white/95 px-1 pb-[env(safe-area-inset-bottom)] pt-2 shadow-[0_-8px_24px_rgba(34,35,65,0.08)] backdrop-blur lg:hidden" aria-label="Mobile navigation">
         {[{ label: 'Home', icon: Home }, { label: 'Courses', icon: Library }, { label: 'AI tutor', icon: MessageCircle }, { label: 'Planner', icon: Target }, { label: 'Profile', icon: CircleUserRound }].map(({ label, icon: Icon }) => {
