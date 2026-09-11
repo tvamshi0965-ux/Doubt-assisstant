@@ -60,6 +60,7 @@ export default function Page() {
   const profileInitials = profileName.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase()
   const currentHour = new Date().getHours()
   const timeGreeting = currentHour < 12 ? 'Good morning' : currentHour < 18 ? 'Good afternoon' : 'Good evening'
+  const learningStartDate = session?.user?.createdAt ? new Date(session.user.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'today'
 
   function sendMessage(text = input) {
     const clean = text.trim()
@@ -115,7 +116,7 @@ export default function Page() {
       <main className="min-w-0 flex-1">
         <header className="flex h-[76px] items-center justify-between border-b border-[#e9eaf1] bg-white/70 px-5 sm:px-8 lg:px-10">
           <button className="lg:hidden" onClick={() => setSidebarOpen(true)} aria-label="Open menu"><Menu className="size-5" /></button>
-          <div className="hidden lg:block"><p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#a2a3af]">Monday, October 14, 2024</p><p className="mt-1 text-[13px] text-[#77798b]">A little progress every day.</p></div>
+          <div className="hidden lg:block"><p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#a2a3af]">Learning since {learningStartDate}</p><p className="mt-1 text-[13px] text-[#77798b]">Your performance starts from your first account activity.</p></div>
           <div className="ml-auto flex items-center gap-3"><button className="relative rounded-full p-2 text-[#898b9a] hover:bg-[#f4f4f8]" aria-label="Notifications"><CircleHelp className="size-[19px]" /><span className="absolute right-1.5 top-1.5 size-1.5 rounded-full bg-[#ef7767]" /></button><div className="flex size-9 items-center justify-center rounded-full bg-[#f7d7ca] text-xs font-bold text-[#9d654d]">{profileInitials}</div></div>
         </header>
         <div className="mx-auto max-w-[1450px] p-5 pb-24 sm:p-8 sm:pb-24 lg:p-10 lg:pb-10">
