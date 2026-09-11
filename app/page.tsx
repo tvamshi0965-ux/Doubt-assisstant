@@ -77,7 +77,7 @@ export default function Page() {
         <div className="mb-11 flex items-center justify-between px-2">
           <div className="flex items-center gap-2.5">
             <div className="flex size-9 items-center justify-center rounded-xl bg-[#6657e8] text-white shadow-[0_6px_14px_rgba(102,87,232,0.28)]"><Sparkles className="size-4" /></div>
-            <span className="text-[17px] font-bold tracking-[-0.04em]">LumaLearn</span>
+            <span className="text-[17px] font-bold tracking-[-0.04em]">EDU TECH</span>
           </div>
           <button className="lg:hidden" onClick={() => setSidebarOpen(false)} aria-label="Close menu"><X className="size-5" /></button>
         </div>
