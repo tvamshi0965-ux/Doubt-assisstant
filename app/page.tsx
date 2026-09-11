@@ -72,7 +72,7 @@ export default function Page() {
 
   return (
     <div className="flex min-h-screen bg-[#f7f8fc] text-[#202238]">
-      <aside className={`fixed inset-y-0 left-0 z-30 flex w-[250px] flex-col border-r border-[#e8e9f1] bg-white px-5 py-6 transition-transform lg:static lg:translate-x-0 ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <aside className={`fixed inset-y-0 left-0 z-30 flex w-[250px] flex-col border-r border-[#e8e9f1] bg-white px-5 py-6 transition-transform lg:static lg:translate-x-0 lg:shadow-none ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <div className="mb-11 flex items-center justify-between px-2">
           <div className="flex items-center gap-2.5">
             <div className="flex size-9 items-center justify-center rounded-xl bg-[#6657e8] text-white shadow-[0_6px_14px_rgba(102,87,232,0.28)]"><Sparkles className="size-4" /></div>
