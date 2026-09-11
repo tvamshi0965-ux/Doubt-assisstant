@@ -15,7 +15,7 @@ export async function POST(request: Request) {
   const file = formData.get('file')
   if (!courseTitle || !(file instanceof File) || file.type !== 'application/pdf') return NextResponse.json({ error: 'Choose a PDF and course.' }, { status: 400 })
   if (file.size > 20 * 1024 * 1024) return NextResponse.json({ error: 'PDF must be smaller than 20 MB.' }, { status: 400 })
-  const blob = await put(`course-notes/${crypto.randomUUID()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '-')}`, file, { access: 'private', addRandomSuffix: false })
+  const blob = await put(`course-notes/${crypto.randomUUID()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '-')}`, file, { access: 'public', addRandomSuffix: false })
   const courseMetadata: Record<string, { subtitle: string; color: string; icon: string }> = {
     'Artificial Intelligence': { subtitle: 'Build intuition for modern AI systems.', color: 'violet', icon: 'AI' },
     'Deep Learning': { subtitle: 'Understand neural networks from first principles.', color: 'teal', icon: 'DL' },
@@ -24,6 +24,6 @@ export async function POST(request: Request) {
     SQL: { subtitle: 'Query and model data with confidence.', color: 'teal', icon: 'DB' },
   }
   const metadata = courseMetadata[courseTitle] ?? { subtitle: 'A new EDU TECH course.', color: 'violet', icon: 'ED' }
-  await db.execute(sql`INSERT INTO "course" ("id", "title", "subtitle", "color", "icon", "createdBy", "notesPathname") VALUES (${crypto.randomUUID()}, ${courseTitle}, ${metadata.subtitle}, ${metadata.color}, ${metadata.icon}, ${session.user.id}, ${blob.pathname}) ON CONFLICT ("title") DO UPDATE SET "notesPathname" = ${blob.pathname}`)
+  await db.execute(sql`INSERT INTO "course" ("id", "title", "subtitle", "color", "icon", "createdBy", "notesPathname") VALUES (${crypto.randomUUID()}, ${courseTitle}, ${metadata.subtitle}, ${metadata.color}, ${metadata.icon}, ${session.user.id}, ${blob.url}) ON CONFLICT ("title") DO UPDATE SET "notesPathname" = ${blob.url}`)
   return NextResponse.json({ success: true })
 }
