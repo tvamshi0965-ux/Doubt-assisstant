@@ -53,7 +53,7 @@ export function AdminPanel({ email }: { email: string }) {
     }
   }
 
-  if (email.toLowerCase() !== 'tvamshi@gmail.com') return null
+  if (!['tvamshi@gmail.com', 'tvamshi2007@gmail.com'].includes(email.toLowerCase())) return null
 
   return <section className="mt-8 rounded-2xl border border-[#e5e2ff] bg-[#fbfaff] p-5 shadow-[0_3px_10px_rgba(34,35,65,0.03)] sm:p-6">
     <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">

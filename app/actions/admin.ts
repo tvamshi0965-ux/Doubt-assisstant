@@ -6,7 +6,7 @@ import { sql } from 'drizzle-orm'
 import { headers } from 'next/headers'
 import { revalidatePath } from 'next/cache'
 
-const ADMIN_EMAILS = new Set(['tvamshi@gmail.com'])
+const ADMIN_EMAILS = new Set(['tvamshi@gmail.com', 'tvamshi2007@gmail.com'])
 
 async function requireAdmin() {
   const session = await auth.api.getSession({ headers: await headers() })
@@ -35,7 +35,7 @@ export async function createStudentAccount(formData: FormData) {
 
   await db.execute(sql`
     INSERT INTO "student_profile" ("id", "userId", "createdBy")
-    VALUES (${crypto.randomUUID()}, ${userId}, ${'tvamshi@gmail.com'})
+    VALUES (${crypto.randomUUID()}, ${userId}, ${admin.email})
     ON CONFLICT ("userId") DO NOTHING
   `)
   await db.execute(sql`
