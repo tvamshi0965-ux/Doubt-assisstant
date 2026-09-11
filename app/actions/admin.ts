@@ -94,6 +94,24 @@ export async function addCourseVideo(formData: FormData) {
   revalidatePath('/')
 }
 
+export async function updateCourseVideo(formData: FormData) {
+  const admin = await requireAdmin()
+  const id = String(formData.get('id') ?? '').trim()
+  const title = String(formData.get('title') ?? '').trim()
+  const youtubeUrl = String(formData.get('youtubeUrl') ?? '').trim()
+  const position = Number(formData.get('position') ?? 0)
+  if (!id || !title || !/^https?:\/\/(www\.)?(youtube\.com|youtu\.be)\//i.test(youtubeUrl)) throw new Error('Enter a lesson title and valid YouTube URL.')
+  await db.execute(sql`UPDATE "course_video" SET "title" = ${title}, "youtubeUrl" = ${youtubeUrl}, "position" = ${Number.isFinite(position) ? position : 0}, "updatedAt" = now(), "createdBy" = ${admin.id} WHERE "id" = ${id}`)
+  revalidatePath('/')
+}
+
+export async function deleteCourseVideo(id: string) {
+  await requireAdmin()
+  if (!id.trim()) throw new Error('Lesson id is required.')
+  await db.execute(sql`DELETE FROM "course_video" WHERE "id" = ${id}`)
+  revalidatePath('/')
+}
+
 export async function getCourseVideos(courseTitle: string) {
   const result = await db.execute(sql`
     SELECT "id", "courseTitle", "title", "youtubeUrl", "position"
