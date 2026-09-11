@@ -6,7 +6,7 @@ import { Check, RefreshCw, UserPlus } from 'lucide-react'
 
 type Student = Awaited<ReturnType<typeof getAdminStudents>>[number]
 
-export function AdminPanel({ email }: { email: string }) {
+export function AdminPanel({ email, activeNav }: { email: string; activeNav: string }) {
   const [students, setStudents] = useState<Student[]>([])
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
@@ -53,15 +53,15 @@ export function AdminPanel({ email }: { email: string }) {
     }
   }
 
-  if (!['tvamshi@gmail.com', 'tvamshi2007@gmail.com'].includes(email.toLowerCase())) return null
+  if (!['tvamshi@gmail.com', 'tvamshi2007@gmail.com'].includes(email.toLowerCase()) || activeNav !== 'Home') return null
 
-  return <section className="mt-8 rounded-2xl border border-[#e5e2ff] bg-[#fbfaff] p-5 shadow-[0_3px_10px_rgba(34,35,65,0.03)] sm:p-6">
+  return <section className="mt-6 w-full min-w-0 overflow-hidden rounded-2xl border border-[#e5e2ff] bg-[#fbfaff] p-3 shadow-[0_3px_10px_rgba(34,35,65,0.03)] sm:mt-8 sm:p-6">
     <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
       <div><p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#6657e8]">Administrator</p><h2 className="mt-2 text-xl font-bold tracking-[-0.03em]">Student accounts</h2><p className="mt-1 text-sm text-[#77798b]">Create login credentials and review each student&apos;s learning performance.</p></div>
       <button type="button" onClick={loadStudents} disabled={loading} className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#dfddfa] bg-white px-3 py-2 text-xs font-bold text-[#6657e8] disabled:opacity-50"><RefreshCw className="size-3.5" /> Refresh roster</button>
     </div>
-    <form action={submitVideo} className="mt-5 grid gap-3 rounded-xl border border-[#ecebf6] bg-white p-4 sm:grid-cols-4"><select name="courseTitle" required aria-label="Course" className="rounded-lg border border-[#e6e6ef] px-3 py-2.5 text-sm outline-none focus:border-[#6657e8]"><option value="">Select course</option><option>Artificial Intelligence</option><option>Deep Learning</option><option>Machine Learning</option><option>Full Stack Development</option><option>SQL</option></select><input name="title" required placeholder="Lesson title" aria-label="Lesson title" className="rounded-lg border border-[#e6e6ef] px-3 py-2.5 text-sm outline-none focus:border-[#6657e8]" /><input name="youtubeUrl" required type="url" placeholder="YouTube URL" aria-label="YouTube URL" className="rounded-lg border border-[#e6e6ef] px-3 py-2.5 text-sm outline-none focus:border-[#6657e8]" /><div className="flex gap-2"><input name="position" type="number" min="0" placeholder="#" aria-label="Lesson position" className="w-16 rounded-lg border border-[#e6e6ef] px-3 py-2.5 text-sm outline-none focus:border-[#6657e8]" /><button type="submit" disabled={loading} className="inline-flex flex-1 items-center justify-center rounded-lg bg-[#6657e8] px-3 text-xs font-bold text-white disabled:opacity-50">Add lesson</button></div></form>
-    <form action={submit} className="mt-5 grid gap-3 rounded-xl border border-[#ecebf6] bg-white p-4 sm:grid-cols-3">
+    <form action={submitVideo} className="mt-4 grid min-w-0 gap-2 rounded-xl border border-[#ecebf6] bg-white p-3 sm:mt-5 sm:gap-3 sm:p-4 sm:grid-cols-4"><select name="courseTitle" required aria-label="Course" className="rounded-lg border border-[#e6e6ef] px-3 py-2.5 text-sm outline-none focus:border-[#6657e8]"><option value="">Select course</option><option>Artificial Intelligence</option><option>Deep Learning</option><option>Machine Learning</option><option>Full Stack Development</option><option>SQL</option></select><input name="title" required placeholder="Lesson title" aria-label="Lesson title" className="rounded-lg border border-[#e6e6ef] px-3 py-2.5 text-sm outline-none focus:border-[#6657e8]" /><input name="youtubeUrl" required type="url" placeholder="YouTube URL" aria-label="YouTube URL" className="rounded-lg border border-[#e6e6ef] px-3 py-2.5 text-sm outline-none focus:border-[#6657e8]" /><div className="flex gap-2"><input name="position" type="number" min="0" placeholder="#" aria-label="Lesson position" className="w-16 rounded-lg border border-[#e6e6ef] px-3 py-2.5 text-sm outline-none focus:border-[#6657e8]" /><button type="submit" disabled={loading} className="inline-flex flex-1 items-center justify-center rounded-lg bg-[#6657e8] px-3 text-xs font-bold text-white disabled:opacity-50">Add lesson</button></div></form>
+    <form action={submit} className="mt-4 grid min-w-0 gap-2 rounded-xl border border-[#ecebf6] bg-white p-3 sm:mt-5 sm:gap-3 sm:p-4 sm:grid-cols-3">
       <input name="name" required placeholder="Student name" aria-label="Student name" className="rounded-lg border border-[#e6e6ef] px-3 py-2.5 text-sm outline-none focus:border-[#6657e8]" />
       <input name="email" required type="email" placeholder="Student email" aria-label="Student email" className="rounded-lg border border-[#e6e6ef] px-3 py-2.5 text-sm outline-none focus:border-[#6657e8]" />
       <div className="flex gap-2"><input name="password" required minLength={8} type="password" placeholder="Password" aria-label="Student password" className="min-w-0 flex-1 rounded-lg border border-[#e6e6ef] px-3 py-2.5 text-sm outline-none focus:border-[#6657e8]" /><button type="submit" disabled={loading} aria-label="Create student account" className="inline-flex items-center justify-center rounded-lg bg-[#6657e8] px-3 text-white disabled:opacity-50"><UserPlus className="size-4" /></button></div>
