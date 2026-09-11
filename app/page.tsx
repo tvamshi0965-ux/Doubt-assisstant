@@ -112,17 +112,13 @@ export default function Page() {
         </header>
         <div className="mx-auto max-w-[1450px] p-5 pb-24 sm:p-8 sm:pb-24 lg:p-10 lg:pb-10">
           <section className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end"><div><p className="mb-2 text-sm font-medium text-[#73758a]">{timeGreeting}, {profileName}</p><h1 className="text-[30px] font-bold tracking-[-0.045em] text-[#23243a] sm:text-[35px]">Ready to make progress?</h1></div><button className="flex w-fit items-center gap-2 rounded-xl bg-[#6657e8] px-4 py-2.5 text-[12px] font-bold text-white shadow-[0_5px_12px_rgba(102,87,232,0.2)] hover:bg-[#5748d6]"><Plus className="size-4" /> Add a goal</button></section>
-          {activeNav === 'Home' ? <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_390px]">
-            <div className="min-w-0">
-              <section className="mb-6 grid gap-4 sm:grid-cols-3">
-                <StatCard icon={<Flame className="size-[19px]" />} iconBg="bg-[#fff1d0]" iconColor="text-[#e4a82e]" label="Current streak" value="12 days" note="Personal best: 18 days" />
-                <StatCard icon={<Clock3 className="size-[19px]" />} iconBg="bg-[#e8e7ff]" iconColor="text-[#6657e8]" label="Study time" value="4h 20m" note="+18% from last week" />
-                <StatCard icon={<Zap className="size-[19px]" />} iconBg="bg-[#ddf5ef]" iconColor="text-[#36a58b]" label="XP earned" value="1,240" note="380 XP to next level" />
-              </section>
-              <section className="rounded-2xl border border-[#e9eaf2] bg-white p-5 shadow-[0_3px_10px_rgba(34,35,65,0.02)] sm:p-6"><div className="mb-5 flex items-center justify-between"><div><h2 className="text-[16px] font-bold">Continue learning</h2><p className="mt-1 text-[12px] text-[#9495a3]">Pick up where you left off</p></div><button className="flex items-center gap-1 text-[12px] font-bold text-[#6657e8]">View all <ChevronRight className="size-3.5" /></button></div><div className="grid gap-3">{courses.map((course) => <CourseCard key={course.title} course={course} />)}</div></section>
-              <section className="mt-6 rounded-2xl border border-[#e9eaf2] bg-white p-5 shadow-[0_3px_10px_rgba(34,35,65,0.02)] sm:p-6"><div className="mb-5 flex items-center justify-between"><div><h2 className="text-[16px] font-bold">This week&apos;s focus</h2><p className="mt-1 text-[12px] text-[#9495a3]">Your activity at a glance</p></div><select className="rounded-lg border border-[#ebebf0] bg-white px-2 py-1.5 text-[11px] font-semibold text-[#6f7182] outline-none"><option>Last 7 days</option></select></div><div className="flex h-[105px] items-end justify-between gap-2 px-2">{[35, 55, 44, 76, 62, 88, 42].map((height, i) => <div className="flex h-full flex-1 flex-col items-center justify-end gap-2" key={i}><div className={`w-full max-w-[42px] rounded-t-md ${i === 5 ? 'bg-[#6657e8]' : 'bg-[#e5e3fc]'}`} style={{ height: `${height}%` }} /><span className="text-[10px] font-medium text-[#a7a8b3]">{['M', 'T', 'W', 'T', 'F', 'S', 'S'][i]}</span></div>)}</div></section>
-            </div>
-            <AssistantPanel messages={messages} input={input} setInput={setInput} onSend={sendMessage} />
+          {activeNav === 'Home' ? <div className="max-w-4xl">
+            <section className="mb-6 grid gap-4 sm:grid-cols-3">
+              <StatCard icon={<Flame className="size-[19px]" />} iconBg="bg-[#fff1d0]" iconColor="text-[#e4a82e]" label="Current streak" value="12 days" note="Personal best: 18 days" />
+              <StatCard icon={<Clock3 className="size-[19px]" />} iconBg="bg-[#e8e7ff]" iconColor="text-[#6657e8]" label="Study time" value="4h 20m" note="+18% from last week" />
+              <StatCard icon={<Zap className="size-[19px]" />} iconBg="bg-[#ddf5ef]" iconColor="text-[#36a58b]" label="XP earned" value="1,240" note="380 XP to next level" />
+            </section>
+            <section className="rounded-2xl border border-[#e9eaf2] bg-white p-5 shadow-[0_3px_10px_rgba(34,35,65,0.02)] sm:p-6"><div className="mb-5 flex items-center justify-between"><div><h2 className="text-[16px] font-bold">Learning performance</h2><p className="mt-1 text-[12px] text-[#9495a3]">Your study activity and streaks at a glance</p></div><select className="rounded-lg border border-[#ebebf0] bg-white px-2 py-1.5 text-[11px] font-semibold text-[#6f7182] outline-none"><option>Last 7 days</option></select></div><div className="flex h-[130px] items-end justify-between gap-2 px-2">{[35, 55, 44, 76, 62, 88, 42].map((height, i) => <div className="flex h-full flex-1 flex-col items-center justify-end gap-2" key={i}><div className={`w-full max-w-[42px] rounded-t-md ${i === 5 ? 'bg-[#6657e8]' : 'bg-[#e5e3fc]'}`} style={{ height: `${height}%` }} /><span className="text-[10px] font-medium text-[#a7a8b3]">{['M', 'T', 'W', 'T', 'F', 'S', 'S'][i]}</span></div>)}</div></section>
           </div> : <SectionView activeNav={activeNav} courses={courses} />}
         </div>
       </main>
