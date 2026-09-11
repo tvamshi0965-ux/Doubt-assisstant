@@ -1,13 +1,14 @@
 'use client'
 
 import { useState } from 'react'
-import { addCourseVideo, createStudentAccount, getAdminStudents } from '@/app/actions/admin'
-import { Check, RefreshCw, UserPlus } from 'lucide-react'
+import { addCourseVideo, createCourse, createStudentAccount, deleteCourse, getAdminCourses, getAdminStudents } from '@/app/actions/admin'
+import { Check, RefreshCw, Trash2, UserPlus } from 'lucide-react'
 
 type Student = Awaited<ReturnType<typeof getAdminStudents>>[number]
 
 export function AdminPanel({ email, activeNav }: { email: string; activeNav: string }) {
   const [students, setStudents] = useState<Student[]>([])
+  const [courses, setCourses] = useState<Awaited<ReturnType<typeof getAdminCourses>>>([])
   const [loading, setLoading] = useState(false)
   const [message, setMessage] = useState('')
   const [error, setError] = useState('')
@@ -39,6 +40,22 @@ export function AdminPanel({ email, activeNav }: { email: string; activeNav: str
     }
   }
 
+  async function loadCourses() {
+    setLoading(true)
+    try { setCourses(await getAdminCourses()) } catch { setError('Only the administrator can manage courses.') } finally { setLoading(false) }
+  }
+
+  async function submitCourse(formData: FormData) {
+    setLoading(true); setMessage(''); setError('')
+    try { await createCourse(formData); setMessage('Course added.'); await loadCourses() } catch (cause) { setError(cause instanceof Error ? cause.message : 'Unable to add course.') } finally { setLoading(false) }
+  }
+
+  async function removeCourse(title: string) {
+    if (!window.confirm(`Delete ${title} and its lessons?`)) return
+    setLoading(true); setMessage(''); setError('')
+    try { await deleteCourse(title); setCourses((current) => current.filter((course) => course.title !== title)); setMessage('Course deleted.') } catch (cause) { setError(cause instanceof Error ? cause.message : 'Unable to delete course.') } finally { setLoading(false) }
+  }
+
   async function submitVideo(formData: FormData) {
     setLoading(true)
     setMessage('')
@@ -60,6 +77,7 @@ export function AdminPanel({ email, activeNav }: { email: string; activeNav: str
       <div><p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#6657e8]">Administrator</p><h2 className="mt-2 text-xl font-bold tracking-[-0.03em]">Student accounts</h2><p className="mt-1 text-sm text-[#77798b]">Create login credentials and review each student&apos;s learning performance.</p></div>
       <button type="button" onClick={loadStudents} disabled={loading} className="inline-flex items-center justify-center gap-2 rounded-xl border border-[#dfddfa] bg-white px-3 py-2 text-xs font-bold text-[#6657e8] disabled:opacity-50"><RefreshCw className="size-3.5" /> Refresh roster</button>
     </div>
+    <div className="mt-5 rounded-xl border border-[#ecebf6] bg-white p-3 sm:p-4"><div className="flex items-center justify-between gap-2"><div><h3 className="text-sm font-bold">Manage courses</h3><p className="mt-1 text-xs text-[#888998]">Add or remove courses from the catalog.</p></div><button type="button" onClick={loadCourses} disabled={loading} className="rounded-lg border border-[#dfddfa] px-3 py-2 text-xs font-bold text-[#6657e8]">Load courses</button></div><form action={submitCourse} className="mt-3 grid gap-2 sm:grid-cols-4"><input name="title" required placeholder="Course name" aria-label="Course name" className="rounded-lg border border-[#e6e6ef] px-3 py-2.5 text-sm outline-none" /><input name="subtitle" required placeholder="Description" aria-label="Course description" className="rounded-lg border border-[#e6e6ef] px-3 py-2.5 text-sm outline-none" /><input name="icon" required maxLength={3} placeholder="Icon" aria-label="Course icon" className="rounded-lg border border-[#e6e6ef] px-3 py-2.5 text-sm outline-none" /><div className="flex gap-2"><select name="color" aria-label="Course color" className="min-w-0 flex-1 rounded-lg border border-[#e6e6ef] px-2 py-2.5 text-sm"><option value="violet">Violet</option><option value="teal">Teal</option><option value="amber">Amber</option></select><button type="submit" disabled={loading} className="rounded-lg bg-[#6657e8] px-3 text-xs font-bold text-white">Add</button></div></form>{courses.length > 0 && <div className="mt-3 grid gap-2">{courses.map((course) => <div key={course.id} className="flex items-center justify-between gap-3 rounded-lg border border-[#efeff5] px-3 py-2.5"><div className="min-w-0"><p className="truncate text-xs font-bold">{course.title}</p><p className="truncate text-[11px] text-[#999aa8]">{course.subtitle}</p></div><button type="button" onClick={() => removeCourse(course.title)} disabled={loading} className="shrink-0 rounded-lg p-2 text-[#c65d59] hover:bg-[#fff0ef]" aria-label={`Delete ${course.title}`}><Trash2 className="size-4" /></button></div>)}</div>}</div>
     <form action={submitVideo} className="mt-4 grid min-w-0 gap-2 rounded-xl border border-[#ecebf6] bg-white p-3 sm:mt-5 sm:gap-3 sm:p-4 sm:grid-cols-4"><select name="courseTitle" required aria-label="Course" className="rounded-lg border border-[#e6e6ef] px-3 py-2.5 text-sm outline-none focus:border-[#6657e8]"><option value="">Select course</option><option>Artificial Intelligence</option><option>Deep Learning</option><option>Machine Learning</option><option>Full Stack Development</option><option>SQL</option></select><input name="title" required placeholder="Lesson title" aria-label="Lesson title" className="rounded-lg border border-[#e6e6ef] px-3 py-2.5 text-sm outline-none focus:border-[#6657e8]" /><input name="youtubeUrl" required type="url" placeholder="YouTube URL" aria-label="YouTube URL" className="rounded-lg border border-[#e6e6ef] px-3 py-2.5 text-sm outline-none focus:border-[#6657e8]" /><div className="flex gap-2"><input name="position" type="number" min="0" placeholder="#" aria-label="Lesson position" className="w-16 rounded-lg border border-[#e6e6ef] px-3 py-2.5 text-sm outline-none focus:border-[#6657e8]" /><button type="submit" disabled={loading} className="inline-flex flex-1 items-center justify-center rounded-lg bg-[#6657e8] px-3 text-xs font-bold text-white disabled:opacity-50">Add lesson</button></div></form>
     <form action={submit} className="mt-4 grid min-w-0 gap-2 rounded-xl border border-[#ecebf6] bg-white p-3 sm:mt-5 sm:gap-3 sm:p-4 sm:grid-cols-3">
       <input name="name" required placeholder="Student name" aria-label="Student name" className="rounded-lg border border-[#e6e6ef] px-3 py-2.5 text-sm outline-none focus:border-[#6657e8]" />

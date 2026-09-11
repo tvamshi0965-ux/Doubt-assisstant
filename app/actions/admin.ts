@@ -48,6 +48,34 @@ export async function createStudentAccount(formData: FormData) {
   return { email }
 }
 
+export async function createCourse(formData: FormData) {
+  const admin = await requireAdmin()
+  const title = String(formData.get('title') ?? '').trim()
+  const subtitle = String(formData.get('subtitle') ?? '').trim()
+  const color = String(formData.get('color') ?? 'violet')
+  const icon = String(formData.get('icon') ?? 'ED').trim().slice(0, 3)
+  if (!title || !subtitle || !icon) throw new Error('Enter a course title, description, and shortcut.')
+  await db.execute(sql`
+    INSERT INTO "course" ("id", "title", "subtitle", "color", "icon", "createdBy")
+    VALUES (${crypto.randomUUID()}, ${title}, ${subtitle}, ${color}, ${icon}, ${admin.id})
+  `)
+  revalidatePath('/')
+}
+
+export async function deleteCourse(courseTitle: string) {
+  await requireAdmin()
+  if (!courseTitle.trim()) throw new Error('Course title is required.')
+  await db.execute(sql`DELETE FROM "course_video" WHERE "courseTitle" = ${courseTitle}`)
+  await db.execute(sql`DELETE FROM "course" WHERE "title" = ${courseTitle}`)
+  revalidatePath('/')
+}
+
+export async function getAdminCourses() {
+  await requireAdmin()
+  const result = await db.execute(sql`SELECT "id", "title", "subtitle", "color", "icon" FROM "course" ORDER BY "createdAt" DESC`)
+  return result.rows as Array<{ id: string; title: string; subtitle: string; color: string; icon: string }>
+}
+
 export async function addCourseVideo(formData: FormData) {
   const admin = await requireAdmin()
   const courseTitle = String(formData.get('courseTitle') ?? '').trim()
