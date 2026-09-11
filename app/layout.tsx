@@ -3,8 +3,8 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'v0 App',
-  description: 'Created with v0',
+  title: 'LumaLearn — Learn with confidence',
+  description: 'A focused learning platform with an AI doubt assistant that helps you make progress every day.',
   generator: 'v0.app',
   icons: {
     icon: [
