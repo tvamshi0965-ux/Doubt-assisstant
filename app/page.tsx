@@ -112,7 +112,7 @@ export default function Page() {
         </header>
         <div className="mx-auto max-w-[1450px] p-5 pb-24 sm:p-8 sm:pb-24 lg:p-10 lg:pb-10">
           <section className="mb-8 flex flex-col justify-between gap-5 sm:flex-row sm:items-end"><div><p className="mb-2 text-sm font-medium text-[#73758a]">{timeGreeting}, {profileName}</p><h1 className="text-[30px] font-bold tracking-[-0.045em] text-[#23243a] sm:text-[35px]">Ready to make progress?</h1></div><button className="flex w-fit items-center gap-2 rounded-xl bg-[#6657e8] px-4 py-2.5 text-[12px] font-bold text-white shadow-[0_5px_12px_rgba(102,87,232,0.2)] hover:bg-[#5748d6]"><Plus className="size-4" /> Add a goal</button></section>
-          <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_390px]">
+          {activeNav === 'Overview' ? <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_390px]">
             <div className="min-w-0">
               <section className="mb-6 grid gap-4 sm:grid-cols-3">
                 <StatCard icon={<Flame className="size-[19px]" />} iconBg="bg-[#fff1d0]" iconColor="text-[#e4a82e]" label="Current streak" value="12 days" note="Personal best: 18 days" />
@@ -123,7 +123,7 @@ export default function Page() {
               <section className="mt-6 rounded-2xl border border-[#e9eaf2] bg-white p-5 shadow-[0_3px_10px_rgba(34,35,65,0.02)] sm:p-6"><div className="mb-5 flex items-center justify-between"><div><h2 className="text-[16px] font-bold">This week&apos;s focus</h2><p className="mt-1 text-[12px] text-[#9495a3]">Your activity at a glance</p></div><select className="rounded-lg border border-[#ebebf0] bg-white px-2 py-1.5 text-[11px] font-semibold text-[#6f7182] outline-none"><option>Last 7 days</option></select></div><div className="flex h-[105px] items-end justify-between gap-2 px-2">{[35, 55, 44, 76, 62, 88, 42].map((height, i) => <div className="flex h-full flex-1 flex-col items-center justify-end gap-2" key={i}><div className={`w-full max-w-[42px] rounded-t-md ${i === 5 ? 'bg-[#6657e8]' : 'bg-[#e5e3fc]'}`} style={{ height: `${height}%` }} /><span className="text-[10px] font-medium text-[#a7a8b3]">{['M', 'T', 'W', 'T', 'F', 'S', 'S'][i]}</span></div>)}</div></section>
             </div>
             <AssistantPanel messages={messages} input={input} setInput={setInput} onSend={sendMessage} />
-          </div>
+          </div> : <SectionView activeNav={activeNav} courses={courses} />}
         </div>
       </main>
       <nav className="fixed inset-x-0 bottom-0 z-40 grid grid-cols-4 border-t border-[#e8e9f1] bg-white/95 px-2 pb-[env(safe-area-inset-bottom)] pt-2 shadow-[0_-8px_24px_rgba(34,35,65,0.08)] backdrop-blur lg:hidden" aria-label="Mobile navigation">
@@ -135,6 +135,14 @@ export default function Page() {
       </nav>
     </div>
   )
+}
+
+function SectionView({ activeNav, courses }: { activeNav: string; courses: typeof courses }) {
+  if (activeNav === 'My courses') {
+    return <section className="rounded-2xl border border-[#e9eaf2] bg-white p-5 shadow-[0_3px_10px_rgba(34,35,65,0.02)] sm:p-6"><div className="mb-5"><p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#a2a3af]">Your library</p><h2 className="mt-2 text-2xl font-bold tracking-[-0.04em]">My courses</h2><p className="mt-1 text-sm text-[#9495a3]">Track every course in one focused space.</p></div><div className="grid gap-3">{courses.map((course) => <CourseCard key={course.title} course={course} />)}</div></section>
+  }
+  if (activeNav === 'AI tutor') return <div className="mx-auto max-w-2xl"><AssistantPanel messages={initialMessages} input="" setInput={() => undefined} onSend={() => undefined} /></div>
+  return <section className="rounded-2xl border border-[#e9eaf2] bg-white p-5 shadow-[0_3px_10px_rgba(34,35,65,0.02)] sm:p-6"><p className="text-[11px] font-bold uppercase tracking-[0.14em] text-[#a2a3af]">Stay on track</p><h2 className="mt-2 text-2xl font-bold tracking-[-0.04em]">Study planner</h2><p className="mt-1 text-sm text-[#9495a3]">Plan your next study session and keep your momentum going.</p><div className="mt-6 grid gap-3 sm:grid-cols-2"><div className="rounded-xl bg-[#faf8f1] p-4"><p className="text-xs font-bold text-[#383747]">Today&apos;s goal</p><p className="mt-2 text-2xl font-bold">45 min</p><p className="mt-1 text-xs text-[#91909b]">12 minutes remaining</p></div><div className="rounded-xl bg-[#f0efff] p-4"><p className="text-xs font-bold text-[#4e42b6]">Next up</p><p className="mt-2 text-sm font-bold">Calculus II</p><p className="mt-1 text-xs text-[#77798b]">Integration techniques</p></div></div></section>
 }
 
 function StatCard({ icon, iconBg, iconColor, label, value, note }: { icon: React.ReactNode; iconBg: string; iconColor: string; label: string; value: string; note: string }) { return <div className="rounded-2xl border border-[#e9eaf2] bg-white p-4 shadow-[0_3px_10px_rgba(34,35,65,0.02)]"><div className={`mb-3 flex size-9 items-center justify-center rounded-xl ${iconBg} ${iconColor}`}>{icon}</div><p className="text-[11px] font-semibold text-[#9798a5]">{label}</p><p className="mt-1 text-[21px] font-bold tracking-[-0.03em]">{value}</p><p className="mt-1 text-[10px] text-[#9b9ca8]">{note}</p></div> }
