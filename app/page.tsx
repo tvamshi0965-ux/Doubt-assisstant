@@ -139,10 +139,10 @@ export default function Page() {
           <div className="hidden lg:block" suppressHydrationWarning><p className="text-[11px] font-bold uppercase tracking-[0.16em] text-[#a2a3af]">Learning since {learningStartDate}</p><p className="mt-1 text-[13px] text-[#77798b]">Your performance starts from your first account activity.</p></div>
           <div className="ml-auto flex items-center gap-3"><button className="relative rounded-full p-2 text-[#898b9a] hover:bg-[#f4f4f8]" aria-label="Notifications"><CircleHelp className="size-[19px]" /><span className="absolute right-1.5 top-1.5 size-1.5 rounded-full bg-[#ef7767]" /></button><div className="flex size-9 items-center justify-center rounded-full bg-[#f7d7ca] text-xs font-bold text-[#9d654d]">{profileInitials}</div></div>
         </header>
-        <div className="mx-auto max-w-[1450px] p-4 pb-28 sm:p-8 sm:pb-24 lg:p-10 lg:pb-10">
+        <div className="mx-auto w-full max-w-[1450px] p-3 pb-28 sm:p-8 sm:pb-24 lg:p-10 lg:pb-10">
           {activeNav === 'Home' && timeGreeting && <section className="mb-8"><p className="text-sm font-medium text-[#73758a]">{timeGreeting}, {profileName}</p></section>}
           {activeNav === 'Home' ? <div className="max-w-4xl">
-            <section className="mb-6 grid gap-3 min-[360px]:grid-cols-2 sm:grid-cols-3 sm:gap-4">
+            <section className="mb-6 grid min-w-0 gap-3 sm:grid-cols-3 sm:gap-4">
               <StatCard icon={<Flame className="size-[19px]" />} iconBg="bg-[#fff1d0]" iconColor="text-[#e4a82e]" label="Current streak" value={learningStarted ? '0 days' : 'Not started'} note={learningStarted ? 'Complete a lesson today' : 'Starts after your first lesson'} />
               <StatCard icon={<Clock3 className="size-[19px]" />} iconBg="bg-[#e8e7ff]" iconColor="text-[#6657e8]" label="Study time" value={learningStarted ? '0 min' : 'Not started'} note={learningStarted ? 'Time updates as you learn' : 'Starts after your first lesson'} />
               <StatCard icon={<Zap className="size-[19px]" />} iconBg="bg-[#ddf5ef]" iconColor="text-[#36a58b]" label="XP earned" value={learningStarted ? '0 XP' : 'Not started'} note={learningStarted ? 'Earn XP by completing lessons' : 'Starts after your first lesson'} />
@@ -156,7 +156,7 @@ export default function Page() {
         {[{ label: 'Home', icon: Home }, { label: 'Courses', icon: Library }, { label: 'AI tutor', icon: MessageCircle }, { label: 'Planner', icon: Target }, { label: 'Profile', icon: CircleUserRound }].map(({ label, icon: Icon }) => {
           const navValue = label === 'Courses' ? 'My courses' : label === 'Planner' ? 'Study planner' : label
           const isActive = activeNav === navValue
-          return <button key={label} type="button" onClick={() => setActiveNav(navValue)} className={`flex min-h-12 min-w-0 flex-col items-center justify-center gap-1 rounded-xl text-[9px] font-semibold transition-colors sm:text-[10px] ${isActive ? 'text-[#6657e8]' : 'text-[#999aa8]'}`} aria-current={isActive ? 'page' : undefined}><Icon className={`size-[17px] ${isActive ? 'stroke-[2.5]' : ''}`} />{label}</button>
+          return <button key={label} type="button" onClick={() => setActiveNav(navValue)} className={`flex min-h-12 min-w-0 flex-1 flex-col items-center justify-center gap-1 rounded-xl px-0.5 text-[9px] font-semibold transition-colors sm:text-[10px] ${isActive ? 'text-[#6657e8]' : 'text-[#999aa8]'}`} aria-current={isActive ? 'page' : undefined}><Icon className={`size-[17px] ${isActive ? 'stroke-[2.5]' : ''}`} />{label}</button>
         })}
       </nav>
     </div>
