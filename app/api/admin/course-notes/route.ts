@@ -7,6 +7,40 @@ import { headers } from 'next/headers'
 
 const ADMIN_EMAILS = new Set(['tvamshi@gmail.com', 'tvamshi2007@gmail.com'])
 
+async function requireAdmin() {
+  const session = await auth.api.getSession({ headers: await headers() })
+  if (!session?.user?.email || !ADMIN_EMAILS.has(session.user.email.toLowerCase())) throw new Error('Unauthorized')
+  return session
+}
+
+export async function GET() {
+  try {
+    await requireAdmin()
+    const result = await db.execute(sql`SELECT "id", "courseTitle", "title", "pathname" FROM "course_note" ORDER BY "createdAt" DESC`)
+    return NextResponse.json(result.rows)
+  } catch { return NextResponse.json({ error: 'Unauthorized' }, { status: 401 }) }
+}
+
+export async function PATCH(request: Request) {
+  try {
+    await requireAdmin()
+    const { id, title } = await request.json()
+    if (!id || !String(title).trim()) return NextResponse.json({ error: 'Title is required.' }, { status: 400 })
+    await db.execute(sql`UPDATE "course_note" SET "title" = ${String(title).trim()} WHERE "id" = ${id}`)
+    return NextResponse.json({ success: true })
+  } catch { return NextResponse.json({ error: 'Unable to update PDF title.' }, { status: 400 }) }
+}
+
+export async function DELETE(request: Request) {
+  try {
+    await requireAdmin()
+    const id = new URL(request.url).searchParams.get('id')
+    if (!id) return NextResponse.json({ error: 'PDF id is required.' }, { status: 400 })
+    await db.execute(sql`DELETE FROM "course_note" WHERE "id" = ${id}`)
+    return NextResponse.json({ success: true })
+  } catch { return NextResponse.json({ error: 'Unable to delete PDF.' }, { status: 400 }) }
+}
+
 export async function POST(request: Request) {
   const session = await auth.api.getSession({ headers: await headers() })
   if (!session?.user?.email || !ADMIN_EMAILS.has(session.user.email.toLowerCase())) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
