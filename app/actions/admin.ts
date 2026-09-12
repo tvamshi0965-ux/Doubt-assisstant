@@ -76,7 +76,7 @@ export async function getAdminCourses() {
 }
 
 export async function getPublicCourses() {
-  const result = await db.execute(sql`SELECT "id", "title", "subtitle", "color", "icon", "notesPathname" FROM "course" ORDER BY "createdAt" DESC`)
+  const result = await db.execute(sql`SELECT DISTINCT ON ("title") "id", "title", "subtitle", "color", "icon", "notesPathname" FROM "course" ORDER BY "title", "createdAt" DESC`)
   return result.rows as Array<{ id: string; title: string; subtitle: string; color: string; icon: string; notesPathname: string | null }>
 }
 

@@ -59,7 +59,7 @@ export default function Page() {
   const [plannerOpen, setPlannerOpen] = useState(false)
   const [studyPlan, setStudyPlan] = useState<string | null>(null)
   const { data: session } = authClient.useSession()
-  const { data: managedCourses = [] } = useSWR('public-courses', getPublicCourses, { revalidateOnFocus: true })
+  const { data: managedCourses = [] } = useSWR('public-courses', getPublicCourses, { revalidateOnFocus: true, revalidateOnMount: true, dedupingInterval: 0 })
   const courses = defaultCourses.map((course) => ({ ...course, ...(managedCourses.find((managedCourse) => managedCourse.title === course.title) ?? {}), notesPathname: managedCourses.find((managedCourse) => managedCourse.title === course.title)?.notesPathname ?? null })).concat(managedCourses.filter((course) => !defaultCourses.some((defaultCourse) => defaultCourse.title === course.title)).map((course) => ({ ...course, progress: 0, lessons: 'Not started' })))
   const profileName = session?.user?.name?.trim() || session?.user?.email?.split('@')[0] || 'Student'
   const profileEmail = session?.user?.email || 'student@lumalearn.com'

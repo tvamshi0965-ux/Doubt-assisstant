@@ -24,6 +24,10 @@ export async function POST(request: Request) {
     SQL: { subtitle: 'Query and model data with confidence.', color: 'teal', icon: 'DB' },
   }
   const metadata = courseMetadata[courseTitle] ?? { subtitle: 'A new EDU TECH course.', color: 'violet', icon: 'ED' }
-  await db.execute(sql`INSERT INTO "course" ("id", "title", "subtitle", "color", "icon", "createdBy", "notesPathname") VALUES (${crypto.randomUUID()}, ${courseTitle}, ${metadata.subtitle}, ${metadata.color}, ${metadata.icon}, ${session.user.id}, ${blob.url}) ON CONFLICT ("title") DO UPDATE SET "notesPathname" = ${blob.url}`)
-  return NextResponse.json({ success: true })
+  await db.execute(sql`UPDATE "course" SET "notesPathname" = ${blob.url} WHERE "title" = ${courseTitle}`)
+  const existing = await db.execute(sql`SELECT "id" FROM "course" WHERE "title" = ${courseTitle} LIMIT 1`)
+  if (existing.rows.length === 0) {
+    await db.execute(sql`INSERT INTO "course" ("id", "title", "subtitle", "color", "icon", "createdBy", "notesPathname") VALUES (${crypto.randomUUID()}, ${courseTitle}, ${metadata.subtitle}, ${metadata.color}, ${metadata.icon}, ${session.user.id}, ${blob.url})`)
+  }
+  return NextResponse.json({ success: true, notesUrl: blob.url })
 }
