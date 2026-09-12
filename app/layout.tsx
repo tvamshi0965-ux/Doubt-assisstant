@@ -3,15 +3,21 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
-  title: 'EDU TECH Learning Platform',
-  description: 'EDU TECH is a modern learning platform for Artificial Intelligence, Deep Learning, Machine Learning, Full Stack Development, SQL, and more.',
-  applicationName: 'EDU TECH',
-  keywords: ['EDU TECH', 'learning platform', 'Artificial Intelligence', 'Deep Learning', 'Machine Learning', 'Full Stack Development', 'SQL'],
+  title: 'EDUTECH Learning Platform',
+  description: 'EDUTECH Learning Platform helps students learn Artificial Intelligence, Deep Learning, Machine Learning, Full Stack Development, SQL, and more.',
+  applicationName: 'EDUTECH Learning Platform',
+  keywords: ['EDUTECH Learning Platform', 'EDUTECH', 'learning platform', 'online courses', 'Artificial Intelligence', 'Deep Learning', 'Machine Learning', 'Full Stack Development', 'SQL'],
   openGraph: {
-    title: 'EDU TECH Learning Platform',
-    description: 'Learn AI, Deep Learning, Machine Learning, Full Stack Development, SQL, and more with EDU TECH.',
-    siteName: 'EDU TECH',
+    title: 'EDUTECH Learning Platform',
+    description: 'Learn Artificial Intelligence, Deep Learning, Machine Learning, Full Stack Development, SQL, and more with EDUTECH.',
+    siteName: 'EDUTECH Learning Platform',
+    locale: 'en_US',
     type: 'website',
+  },
+  twitter: {
+    card: 'summary',
+    title: 'EDUTECH Learning Platform',
+    description: 'A modern learning platform for students and lifelong learners.',
   },
   generator: 'v0.app',
   icons: {
