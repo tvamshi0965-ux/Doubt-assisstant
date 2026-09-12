@@ -77,7 +77,8 @@ export async function getAdminCourses() {
 
 export async function getPublicCourses() {
   const result = await db.execute(sql`SELECT DISTINCT ON ("title") "id", "title", "subtitle", "color", "icon", "notesPathname" FROM "course" ORDER BY "title", "createdAt" DESC`)
-  return result.rows as Array<{ id: string; title: string; subtitle: string; color: string; icon: string; notesPathname: string | null }>
+  const notes = await db.execute(sql`SELECT "id", "courseTitle", "title", "pathname" FROM "course_note" ORDER BY "createdAt" DESC`)
+  return result.rows.map((course) => ({ ...course, notes: notes.rows.filter((note) => note.courseTitle === course.title) })) as Array<{ id: string; title: string; subtitle: string; color: string; icon: string; notesPathname: string | null; notes: Array<{ id: string; courseTitle: string; title: string; pathname: string }> }>
 }
 
 export async function addCourseVideo(formData: FormData) {
