@@ -3,6 +3,8 @@ import type { Metadata, Viewport } from 'next'
 import './globals.css'
 
 export const metadata: Metadata = {
+  metadataBase: process.env.VERCEL_PROJECT_PRODUCTION_URL ? new URL(`https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`) : undefined,
+  alternates: { canonical: '/' },
   title: 'EDUTECH Learning Platform',
   description: 'EDUTECH Learning Platform helps students learn Artificial Intelligence, Deep Learning, Machine Learning, Full Stack Development, SQL, and more.',
   applicationName: 'EDUTECH Learning Platform',
