@@ -67,12 +67,12 @@ export default function Page() {
   const profileEmail = session?.user?.email || 'student@lumalearn.com'
   const profileInitials = profileName.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase()
   const [timeGreeting, setTimeGreeting] = useState('')
-  const learningStartDate = session?.user?.createdAt ? new Date(session.user.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' }) : 'today'
+  const learningStartDate = session?.user?.createdAt ? new Date(session.user.createdAt).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', month: 'short', day: 'numeric', year: 'numeric' }) : 'today'
 
   useEffect(() => {
     const updateDateTime = () => {
       const now = new Date()
-      const currentHour = now.getHours()
+      const currentHour = Number(new Intl.DateTimeFormat('en-IN', { timeZone: 'Asia/Kolkata', hour: 'numeric', hour12: false }).format(now))
       setTimeGreeting(currentHour < 12 ? 'Good morning' : currentHour < 18 ? 'Good afternoon' : 'Good evening')
     }
     updateDateTime()
