@@ -99,7 +99,7 @@ export function AdminPanel({ email, activeNav }: { email: string; activeNav: str
       const response = await fetch('/api/admin/course-notes', { method: 'POST', body: formData })
       const result = await readJsonResponse(response)
       if (!response.ok) throw new Error(result.error ?? 'Unable to upload notes.')
-      setMessage('Course notes uploaded.'); await loadCourses(); await loadNotes()
+      setMessage('Course notes uploaded.'); await loadCourses(); await loadNotes(); window.dispatchEvent(new Event('course-notes-updated'))
     } catch (cause) { setError(cause instanceof Error ? cause.message : 'Unable to upload notes.') } finally { setLoading(false) }
   }
 

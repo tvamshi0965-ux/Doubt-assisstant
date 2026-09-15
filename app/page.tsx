@@ -59,7 +59,12 @@ export default function Page() {
   const [plannerOpen, setPlannerOpen] = useState(false)
   const [studyPlan, setStudyPlan] = useState<string | null>(null)
   const { data: session } = authClient.useSession()
-  const { data: managedCourses = [] } = useSWR('public-courses', getPublicCourses, { revalidateOnFocus: true, revalidateOnMount: true, dedupingInterval: 0 })
+  const { data: managedCourses = [], mutate: refreshCourses } = useSWR('public-courses', getPublicCourses, { revalidateOnFocus: true, revalidateOnReconnect: true, revalidateOnMount: true, refreshInterval: 5000, dedupingInterval: 0 })
+  useEffect(() => {
+    const refresh = () => void refreshCourses()
+    window.addEventListener('course-notes-updated', refresh)
+    return () => window.removeEventListener('course-notes-updated', refresh)
+  }, [refreshCourses])
   const { data: studyTime } = useSWR<{ seconds: number }>('/api/study-time', (url) => fetch(url).then((response) => response.json()), { refreshInterval: 30000 })
   const studyMinutes = Math.floor((studyTime?.seconds ?? 0) / 60)
   const courses = defaultCourses.map((course) => ({ ...course, ...(managedCourses.find((managedCourse) => managedCourse.title === course.title) ?? {}), notesPathname: managedCourses.find((managedCourse) => managedCourse.title === course.title)?.notesPathname ?? null, notes: managedCourses.find((managedCourse) => managedCourse.title === course.title)?.notes ?? [] })).concat(managedCourses.filter((course) => !defaultCourses.some((defaultCourse) => defaultCourse.title === course.title)).map((course) => ({ ...course, progress: 0, lessons: 'Not started', notes: course.notes ?? [] })))
