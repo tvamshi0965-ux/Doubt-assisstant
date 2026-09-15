@@ -47,7 +47,8 @@ export async function POST(request: Request) {
   const formData = await request.formData()
   const courseTitle = String(formData.get('courseTitle') ?? '').trim()
   const file = formData.get('file')
-  if (!courseTitle || !(file instanceof File) || file.type !== 'application/pdf') return NextResponse.json({ error: 'Choose a PDF and course.' }, { status: 400 })
+  const isPdf = file instanceof File && (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf'))
+  if (!courseTitle || !isPdf) return NextResponse.json({ error: 'Choose a course and a valid .pdf file.' }, { status: 400 })
   const blob = await put(`course-notes/${crypto.randomUUID()}-${file.name.replace(/[^a-zA-Z0-9._-]/g, '-')}`, file, { access: 'public', addRandomSuffix: false })
   const courseMetadata: Record<string, { subtitle: string; color: string; icon: string }> = {
     'Artificial Intelligence': { subtitle: 'Build intuition for modern AI systems.', color: 'violet', icon: 'AI' },
