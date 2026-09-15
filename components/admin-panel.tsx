@@ -96,7 +96,6 @@ export function AdminPanel({ email, activeNav }: { email: string; activeNav: str
     try {
       const file = formData.get('file')
       if (!(file instanceof File) || file.size === 0) throw new Error('Choose a PDF file before uploading.')
-      if (file.size > 20 * 1024 * 1024) throw new Error('PDF must be smaller than 20 MB.')
       const response = await fetch('/api/admin/course-notes', { method: 'POST', body: formData })
       const result = await readJsonResponse(response)
       if (!response.ok) throw new Error(result.error ?? 'Unable to upload notes.')
