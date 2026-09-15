@@ -69,8 +69,13 @@ export function AdminPanel({ email, activeNav }: { email: string; activeNav: str
     try { await createCourse(formData); setMessage('Course added.'); await loadCourses() } catch (cause) { setError(cause instanceof Error ? cause.message : 'Unable to add course.') } finally { setLoading(false) }
   }
 
+  async function readJsonResponse(response: Response) {
+    const text = await response.text()
+    try { return JSON.parse(text) } catch { throw new Error(response.status === 413 ? 'PDF is too large. Please upload a smaller PDF.' : text.slice(0, 160) || 'The server returned an invalid response.') }
+  }
+
   async function loadNotes() {
-    try { const response = await fetch('/api/admin/course-notes'); const result = await response.json(); if (!response.ok) throw new Error(result.error); setNotes(result) } catch (cause) { setError(cause instanceof Error ? cause.message : 'Unable to load PDFs.') }
+    try { const response = await fetch('/api/admin/course-notes'); const result = await readJsonResponse(response); if (!response.ok) throw new Error(result.error); setNotes(result) } catch (cause) { setError(cause instanceof Error ? cause.message : 'Unable to load PDFs.') }
   }
 
   async function updateNote(id: string, title: string) {
@@ -90,7 +95,7 @@ export function AdminPanel({ email, activeNav }: { email: string; activeNav: str
     setLoading(true); setMessage(''); setError('')
     try {
       const response = await fetch('/api/admin/course-notes', { method: 'POST', body: formData })
-      const result = await response.json()
+      const result = await readJsonResponse(response)
       if (!response.ok) throw new Error(result.error ?? 'Unable to upload notes.')
       setMessage('Course notes uploaded.'); await loadCourses(); await loadNotes()
     } catch (cause) { setError(cause instanceof Error ? cause.message : 'Unable to upload notes.') } finally { setLoading(false) }
