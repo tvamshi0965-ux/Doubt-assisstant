@@ -66,7 +66,11 @@ export default function Page() {
     return () => window.removeEventListener('course-notes-updated', refresh)
   }, [refreshCourses])
   const { data: studyTime } = useSWR<{ seconds: number }>('/api/study-time', (url) => fetch(url).then((response) => response.json()), { refreshInterval: 30000 })
+  const { data: streakData, mutate: refreshStreak } = useSWR<{ streak: number; activeToday: boolean }>('/api/streak', (url) => fetch(url).then((response) => response.json()), { revalidateOnFocus: true })
   const studyMinutes = Math.floor((studyTime?.seconds ?? 0) / 60)
+  useEffect(() => {
+    void fetch('/api/streak', { method: 'POST' }).then(() => refreshStreak())
+  }, [refreshStreak])
   const courses = defaultCourses.map((course) => ({ ...course, ...(managedCourses.find((managedCourse) => managedCourse.title === course.title) ?? {}), notesPathname: managedCourses.find((managedCourse) => managedCourse.title === course.title)?.notesPathname ?? null, notes: managedCourses.find((managedCourse) => managedCourse.title === course.title)?.notes ?? [] })).concat(managedCourses.filter((course) => !defaultCourses.some((defaultCourse) => defaultCourse.title === course.title)).map((course) => ({ ...course, progress: 0, lessons: 'Not started', notes: course.notes ?? [] })))
   const profileName = session?.user?.name?.trim() || session?.user?.email?.split('@')[0] || 'Student'
   const profileEmail = session?.user?.email || 'student@lumalearn.com'
@@ -156,7 +160,7 @@ export default function Page() {
           {activeNav === 'Home' && timeGreeting && <section className="mb-8"><p className="text-sm font-medium text-[#73758a]">{timeGreeting}, {profileName}</p></section>}
           {activeNav === 'Home' ? <div className="max-w-4xl">
             <section className="mb-6 grid min-w-0 gap-3 sm:grid-cols-3 sm:gap-4">
-              <StatCard icon={<Flame className="size-[19px]" />} iconBg="bg-[#fff1d0]" iconColor="text-[#e4a82e]" label="Current streak" value={learningStarted ? '0 days' : 'Not started'} note={learningStarted ? 'Complete a lesson today' : 'Starts after your first lesson'} />
+              <StatCard icon={<Flame className="size-[19px]" />} iconBg="bg-[#fff1d0]" iconColor="text-[#e4a82e]" label="Current streak" value={streakData?.streak ? `${streakData.streak} day${streakData.streak === 1 ? '' : 's'}` : '0 days'} note={streakData?.activeToday ? 'Keep opening the app daily' : 'Open the app today to start'} />
               <StatCard icon={<Clock3 className="size-[19px]" />} iconBg="bg-[#e8e7ff]" iconColor="text-[#6657e8]" label="Study time" value={learningStarted || studyMinutes > 0 ? `${studyMinutes} min` : 'Not started'} note={learningStarted || studyMinutes > 0 ? 'Video playback time today' : 'Starts after your first lesson'} />
               <StatCard icon={<Zap className="size-[19px]" />} iconBg="bg-[#ddf5ef]" iconColor="text-[#36a58b]" label="XP earned" value={learningStarted ? '0 XP' : 'Not started'} note={learningStarted ? 'Earn XP by completing lessons' : 'Starts after your first lesson'} />
             </section>
