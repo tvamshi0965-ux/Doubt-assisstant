@@ -59,7 +59,10 @@ export default function Page() {
   const [plannerOpen, setPlannerOpen] = useState(false)
   const [studyPlan, setStudyPlan] = useState<string | null>(null)
   const [profileImage, setProfileImage] = useState<string | null>(null)
-  const { data: session } = authClient.useSession()
+  const { data: session, isPending: sessionPending } = authClient.useSession()
+  useEffect(() => {
+    if (!sessionPending && !session?.user) router.replace('/sign-in')
+  }, [router, sessionPending, session?.user])
   const { data: managedCourses = [], mutate: refreshCourses } = useSWR('public-courses', getPublicCourses, { revalidateOnFocus: true, revalidateOnReconnect: true, revalidateOnMount: true, refreshInterval: 5000, dedupingInterval: 0 })
   useEffect(() => {
     const refresh = () => void refreshCourses()
@@ -73,7 +76,9 @@ export default function Page() {
     void fetch('/api/streak', { method: 'POST' }).then(() => refreshStreak())
   }, [refreshStreak])
   const courses = defaultCourses.map((course) => ({ ...course, ...(managedCourses.find((managedCourse) => managedCourse.title === course.title) ?? {}), notesPathname: managedCourses.find((managedCourse) => managedCourse.title === course.title)?.notesPathname ?? null, notes: managedCourses.find((managedCourse) => managedCourse.title === course.title)?.notes ?? [] })).concat(managedCourses.filter((course) => !defaultCourses.some((defaultCourse) => defaultCourse.title === course.title)).map((course) => ({ ...course, progress: 0, lessons: 'Not started', notes: course.notes ?? [] })))
-  const profileName = session?.user?.name?.trim() || session?.user?.email?.split('@')[0] || 'Student'
+  if (sessionPending || !session?.user) return <div className="min-h-screen bg-[#f7f8fc]" aria-label="Loading" />
+
+  const profileName = session.user.name?.trim() || session.user.email?.split('@')[0] || 'Student'
   const profileEmail = session?.user?.email || 'student@lumalearn.com'
   const profileInitials = profileName.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase()
   useEffect(() => { setProfileImage(session?.user?.image ?? null) }, [session?.user?.image])
