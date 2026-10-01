@@ -35,7 +35,7 @@ export function AuthForm({ mode }: AuthFormProps) {
     <section className="hidden flex-1 flex-col justify-between bg-[#6657e8] p-10 text-white lg:flex">
       <Link href="/" className="flex items-center gap-2.5 text-lg font-bold"><span className="flex size-9 items-center justify-center rounded-xl bg-white/15"><Sparkles className="size-4" /></span>EDU TECH</Link>
       <div className="max-w-md"><p className="mb-5 text-sm font-semibold uppercase tracking-[0.18em] text-white/65">Learn with clarity</p><h1 className="text-5xl font-bold leading-[1.05] tracking-[-0.05em]">Small steps.<br />Big breakthroughs.</h1><p className="mt-6 text-base leading-7 text-white/75">Build momentum with courses designed around your pace, plus an AI tutor that never makes you feel stuck.</p></div>
-      <p className="text-xs text-white/55">© 2024 EDU TECH</p>
+      <p className="text-xs text-white/55">© 2026 EDU TECH</p>
     </section>
     <section className="flex w-full items-center justify-center px-5 py-10 sm:px-10 lg:w-[530px] lg:px-16">
       <div className="w-full max-w-[370px]"><Link href="/" className="mb-12 flex items-center gap-2.5 text-lg font-bold lg:hidden"><span className="flex size-9 items-center justify-center rounded-xl bg-[#6657e8] text-white"><Sparkles className="size-4" /></span>EDU TECH</Link><div className="mb-8"><h2 className="text-3xl font-bold tracking-[-0.045em]">{isSignUp ? 'Create an account' : 'Sign in'}</h2></div>
