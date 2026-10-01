@@ -1,7 +1,6 @@
 'use client'
 
 import Link from 'next/link'
-import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 import { ArrowRight, Eye, EyeOff, Sparkles } from 'lucide-react'
 import { authClient } from '@/lib/auth-client'
@@ -9,7 +8,6 @@ import { authClient } from '@/lib/auth-client'
 type AuthFormProps = { mode: 'sign-in' | 'sign-up' }
 
 export function AuthForm({ mode }: AuthFormProps) {
-  const router = useRouter()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -27,8 +25,7 @@ export function AuthForm({ mode }: AuthFormProps) {
       : await authClient.signIn.email({ email, password })
     setPending(false)
     if (result.error) { setError('We could not complete that request. Check your details and try again.'); return }
-    router.push('/')
-    router.refresh()
+    window.location.assign('/')
   }
 
   return <main className="flex min-h-screen bg-[#f7f8fc] text-[#202238]">

@@ -1,7 +1,6 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { authClient } from '@/lib/auth-client'
 import { AdminPanel } from '@/components/admin-panel'
 import { CourseVideoPlayer } from '@/components/course-video-player'
@@ -47,7 +46,6 @@ const initialMessages = [
 ]
 
 export default function Page() {
-  const router = useRouter()
   const [sidebarOpen, setSidebarOpen] = useState(false)
   const [messages, setMessages] = useState(initialMessages)
   const [signingOut, setSigningOut] = useState(false)
@@ -61,8 +59,8 @@ export default function Page() {
   const [profileImage, setProfileImage] = useState<string | null>(null)
   const { data: session, isPending: sessionPending } = authClient.useSession()
   useEffect(() => {
-    if (!sessionPending && !session?.user) router.replace('/sign-in')
-  }, [router, sessionPending, session?.user])
+    if (!sessionPending && !session?.user) window.location.replace('/sign-in')
+  }, [sessionPending, session?.user])
   const { data: managedCourses = [], mutate: refreshCourses } = useSWR('public-courses', getPublicCourses, { revalidateOnFocus: true, revalidateOnReconnect: true, revalidateOnMount: true, refreshInterval: 5000, dedupingInterval: 0 })
   useEffect(() => {
     const refresh = () => void refreshCourses()
@@ -151,8 +149,7 @@ export default function Page() {
             onClick={async () => {
               setSigningOut(true)
               await authClient.signOut()
-              router.push('/sign-in')
-              router.refresh()
+window.location.replace('/sign-in')
             }}
             disabled={signingOut}
             className="ml-auto rounded-lg px-2 py-1.5 text-[11px] font-semibold text-[#8b8c9a] transition hover:bg-[#f4f3ff] hover:text-[#6657e8] disabled:opacity-50"
