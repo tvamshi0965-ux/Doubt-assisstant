@@ -72,6 +72,8 @@ export default function Page() {
   const { data: studyTime } = useSWR<{ seconds: number }>('/api/study-time', (url) => fetch(url).then((response) => response.json()), { refreshInterval: 30000 })
   const { data: streakData, mutate: refreshStreak } = useSWR<{ streak: number; activeToday: boolean }>('/api/streak', (url) => fetch(url).then((response) => response.json()), { revalidateOnFocus: true })
   const studyMinutes = Math.floor((studyTime?.seconds ?? 0) / 60)
+  const [timeGreeting, setTimeGreeting] = useState('')
+  useEffect(() => { setProfileImage(session?.user?.image ?? null) }, [session?.user?.image])
   useEffect(() => {
     void fetch('/api/streak', { method: 'POST' }).then(() => refreshStreak())
   }, [refreshStreak])
@@ -81,7 +83,6 @@ export default function Page() {
   const profileName = session.user.name?.trim() || session.user.email?.split('@')[0] || 'Student'
   const profileEmail = session?.user?.email || 'student@lumalearn.com'
   const profileInitials = profileName.split(/\s+/).map((part) => part[0]).join('').slice(0, 2).toUpperCase()
-  useEffect(() => { setProfileImage(session?.user?.image ?? null) }, [session?.user?.image])
   async function uploadProfileImage(file: File) {
     const formData = new FormData(); formData.append('file', file)
     const response = await fetch('/api/profile/image', { method: 'POST', body: formData })
@@ -89,7 +90,6 @@ export default function Page() {
     if (!response.ok) throw new Error(result.error ?? 'Unable to upload profile image.')
     setProfileImage(result.image)
   }
-  const [timeGreeting, setTimeGreeting] = useState('')
   const learningStartDate = session?.user?.createdAt ? new Date(session.user.createdAt).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', month: 'short', day: 'numeric', year: 'numeric' }) : 'today'
 
   useEffect(() => {
