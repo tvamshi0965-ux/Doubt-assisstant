@@ -11,12 +11,29 @@ const ADMIN_EMAILS = new Set(['tvamshi@gmail.com', 'tvamshi2007@gmail.com'])
 async function requireAdmin() {
   const session = await auth.api.getSession({ headers: await headers() })
   const email = session?.user?.email?.toLowerCase()
-  if (!email || !ADMIN_EMAILS.has(email)) throw new Error('Unauthorized')
+  if (!email) throw new Error('Unauthorized')
+  if (ADMIN_EMAILS.has(email)) return session.user
+  const profile = await db.execute(sql`SELECT "id" FROM "admin_profile" WHERE "userId" = ${session.user.id} LIMIT 1`)
+  if (!profile.rows.length) throw new Error('Unauthorized')
   return session.user
 }
 
-export async function createStudentAccount(formData: FormData) {
+export async function createAdminAccount(formData: FormData) {
   await requireAdmin()
+  const email = String(formData.get('email') ?? '').trim().toLowerCase()
+  const password = String(formData.get('password') ?? '')
+  const name = String(formData.get('name') ?? '').trim()
+  if (!email || !password || password.length < 8 || !name) throw new Error('Enter a name, email, and password with at least 8 characters.')
+  const result = await auth.api.signUpEmail({ body: { email, password, name }, headers: await headers() })
+  if (!result.user?.id) throw new Error('Unable to create administrator account.')
+  const admin = await requireAdmin()
+  await db.execute(sql`INSERT INTO "admin_profile" ("id", "userId", "createdBy") VALUES (${crypto.randomUUID()}, ${result.user.id}, ${admin.id}) ON CONFLICT ("userId") DO NOTHING`)
+  revalidatePath('/')
+  return { email }
+}
+
+export async function createStudentAccount(formData: FormData) {
+  const admin = await requireAdmin()
   const email = String(formData.get('email') ?? '').trim().toLowerCase()
   const password = String(formData.get('password') ?? '')
   const name = String(formData.get('name') ?? '').trim()
