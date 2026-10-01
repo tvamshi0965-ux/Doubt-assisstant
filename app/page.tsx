@@ -78,6 +78,16 @@ export default function Page() {
     void fetch('/api/streak', { method: 'POST' }).then(() => refreshStreak())
   }, [refreshStreak])
   const courses = defaultCourses.map((course) => ({ ...course, ...(managedCourses.find((managedCourse) => managedCourse.title === course.title) ?? {}), notesPathname: managedCourses.find((managedCourse) => managedCourse.title === course.title)?.notesPathname ?? null, notes: managedCourses.find((managedCourse) => managedCourse.title === course.title)?.notes ?? [] })).concat(managedCourses.filter((course) => !defaultCourses.some((defaultCourse) => defaultCourse.title === course.title)).map((course) => ({ ...course, progress: 0, lessons: 'Not started', notes: course.notes ?? [] })))
+  useEffect(() => {
+    const updateDateTime = () => {
+      const now = new Date()
+      const currentHour = Number(new Intl.DateTimeFormat('en-IN', { timeZone: 'Asia/Kolkata', hour: 'numeric', hour12: false }).format(now))
+      setTimeGreeting(currentHour < 12 ? 'Good morning' : currentHour < 18 ? 'Good afternoon' : 'Good evening')
+    }
+    updateDateTime()
+    const timer = window.setInterval(updateDateTime, 60000)
+    return () => window.clearInterval(timer)
+  }, [])
   if (sessionPending || !session?.user) return <div className="min-h-screen bg-[#f7f8fc]" aria-label="Loading" />
 
   const profileName = session.user.name?.trim() || session.user.email?.split('@')[0] || 'Student'
@@ -91,17 +101,6 @@ export default function Page() {
     setProfileImage(result.image)
   }
   const learningStartDate = session?.user?.createdAt ? new Date(session.user.createdAt).toLocaleDateString('en-IN', { timeZone: 'Asia/Kolkata', month: 'short', day: 'numeric', year: 'numeric' }) : 'today'
-
-  useEffect(() => {
-    const updateDateTime = () => {
-      const now = new Date()
-      const currentHour = Number(new Intl.DateTimeFormat('en-IN', { timeZone: 'Asia/Kolkata', hour: 'numeric', hour12: false }).format(now))
-      setTimeGreeting(currentHour < 12 ? 'Good morning' : currentHour < 18 ? 'Good afternoon' : 'Good evening')
-    }
-    updateDateTime()
-    const timer = window.setInterval(updateDateTime, 60000)
-    return () => window.clearInterval(timer)
-  }, [])
 
   async function sendMessage(text = input) {
     const clean = text.trim()
