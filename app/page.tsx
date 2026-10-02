@@ -37,6 +37,7 @@ const defaultCourses = [
   { title: 'Machine Learning', subtitle: 'Models, data, and predictions', progress: 28, color: 'amber', icon: 'ML', lessons: '7 of 26 lessons' },
   { title: 'Full Stack Development', subtitle: 'Build modern web applications', progress: 18, color: 'violet', icon: 'FS', lessons: '5 of 28 lessons' },
   { title: 'SQL', subtitle: 'Query and manage relational data', progress: 12, color: 'teal', icon: 'DB', lessons: '3 of 20 lessons' },
+  { title: 'APTITUDE', subtitle: 'Practice quantitative and logical reasoning', progress: 0, color: 'amber', icon: 'AP', lessons: 'Not started' },
 ]
 
 const initialMessages = [
